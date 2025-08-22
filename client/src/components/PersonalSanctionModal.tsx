@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertPersonalSanctionSchema, type InsertPersonalSanction } from "@shared/schema";
+import { insertPersonalSanctionSchema, type InsertPersonalSanction, type PersonalSanction } from "@shared/schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -16,6 +16,7 @@ import { useState } from "react";
 interface PersonalSanctionModalProps {
   isOpen: boolean;
   onClose: () => void;
+  editingSanction?: PersonalSanction | null;
 }
 
 const SPORTS = [
@@ -60,7 +61,7 @@ const UBICACIONES = [
   'Presidente Roque Sáenz Peña'
 ];
 
-export default function PersonalSanctionModal({ isOpen, onClose }: PersonalSanctionModalProps) {
+export default function PersonalSanctionModal({ isOpen, onClose, editingSanction }: PersonalSanctionModalProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [uploadedActa, setUploadedActa] = useState<string | null>(null);
@@ -68,27 +69,32 @@ export default function PersonalSanctionModal({ isOpen, onClose }: PersonalSanct
   const form = useForm<InsertPersonalSanction>({
     resolver: zodResolver(insertPersonalSanctionSchema),
     defaultValues: {
-      nombrePersona: "",
-      dniPersona: "",
-      edadPersona: 18,
-      deporte: "",
-      ubicacion: "",
-      motivoSancion: "",
-      fechaInicio: "",
-      fechaFin: "",
-      observaciones: "",
-      actaPdf: "",
+      nombrePersona: editingSanction?.nombrePersona || "",
+      dniPersona: editingSanction?.dniPersona || "",
+      edadPersona: editingSanction?.edadPersona || 18,
+      deporte: editingSanction?.deporte || "",
+      ubicacion: editingSanction?.ubicacion || "",
+      motivoSancion: editingSanction?.motivoSancion || "",
+      fechaInicio: editingSanction?.fechaInicio || "",
+      fechaFin: editingSanction?.fechaFin || "",
+      observaciones: editingSanction?.observaciones || "",
+      actaPdf: editingSanction?.actaPdf || "",
     },
   });
 
-  const createMutation = useMutation({
-    mutationFn: (data: InsertPersonalSanction) => 
-      apiRequest("POST", "/api/personal-sanctions", data),
+  const saveMutation = useMutation({
+    mutationFn: (data: InsertPersonalSanction) => {
+      if (editingSanction) {
+        return apiRequest("PUT", `/api/personal-sanctions/${editingSanction.id}`, data);
+      } else {
+        return apiRequest("POST", "/api/personal-sanctions", data);
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/personal-sanctions"] });
       toast({
-        title: "Sanción creada",
-        description: "La sanción personal fue creada exitosamente",
+        title: editingSanction ? "Sanción actualizada" : "Sanción creada",
+        description: editingSanction ? "La sanción fue actualizada exitosamente" : "La sanción personal fue creada exitosamente",
       });
       form.reset();
       onClose();
@@ -96,7 +102,7 @@ export default function PersonalSanctionModal({ isOpen, onClose }: PersonalSanct
     onError: (error: any) => {
       toast({
         title: "Error",
-        description: error.message || "No se pudo crear la sanción",
+        description: error.message || (editingSanction ? "No se pudo actualizar la sanción" : "No se pudo crear la sanción"),
         variant: "destructive",
       });
     },
@@ -104,7 +110,7 @@ export default function PersonalSanctionModal({ isOpen, onClose }: PersonalSanct
 
   const onSubmit = (data: InsertPersonalSanction) => {
     const finalData = { ...data, actaPdf: uploadedActa || "" };
-    createMutation.mutate(finalData);
+    saveMutation.mutate(finalData);
   };
 
   const handleFileUploaded = (filePath: string) => {
@@ -121,7 +127,7 @@ export default function PersonalSanctionModal({ isOpen, onClose }: PersonalSanct
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-gray-800">
-            Nueva Sanción Personal - Tribuna Segura
+            {editingSanction ? 'Editar Sanción Personal' : 'Nueva Sanción Personal'} - Tribuna Segura
           </DialogTitle>
         </DialogHeader>
         
@@ -306,18 +312,18 @@ export default function PersonalSanctionModal({ isOpen, onClose }: PersonalSanct
             <Button 
               type="submit" 
               className="flex-1 bg-orange-600 hover:bg-orange-700"
-              disabled={createMutation.isPending}
+              disabled={saveMutation.isPending}
               data-testid="button-save-personal-sanction"
             >
-              {createMutation.isPending ? (
+              {saveMutation.isPending ? (
                 <>
                   <i className="fas fa-spinner fa-spin mr-2"></i>
-                  Guardando...
+                  {editingSanction ? 'Actualizando...' : 'Creando...'}
                 </>
               ) : (
                 <>
                   <i className="fas fa-save mr-2"></i>
-                  Guardar Sanción Personal
+                  {editingSanction ? 'Actualizar Sanción' : 'Guardar Sanción Personal'}
                 </>
               )}
             </Button>

@@ -16,6 +16,7 @@ import { useState } from "react";
 interface ClubSanctionModalProps {
   isOpen: boolean;
   onClose: () => void;
+  editingSanction?: ClubSanction | null;
 }
 
 const SPORTS = [
@@ -87,7 +88,7 @@ const MOTIVOS_SANCION = [
   'Otros motivos organizativos'
 ];
 
-export default function ClubSanctionModal({ isOpen, onClose }: ClubSanctionModalProps) {
+export default function ClubSanctionModal({ isOpen, onClose, editingSanction }: ClubSanctionModalProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [uploadedActa, setUploadedActa] = useState<string | null>(null);
@@ -95,26 +96,31 @@ export default function ClubSanctionModal({ isOpen, onClose }: ClubSanctionModal
   const form = useForm<InsertClubSanction>({
     resolver: zodResolver(insertClubSanctionSchema),
     defaultValues: {
-      nombreSancionado: "",
-      deporte: "",
-      ubicacion: "",
-      tipoSancion: "",
-      motivoSancion: "",
-      fechaInicio: "",
-      fechaFin: "",
-      observaciones: "",
-      actaPdf: "",
+      nombreSancionado: editingSanction?.nombreSancionado || "",
+      deporte: editingSanction?.deporte || "",
+      ubicacion: editingSanction?.ubicacion || "",
+      tipoSancion: editingSanction?.tipoSancion || "",
+      motivoSancion: editingSanction?.motivoSancion || "",
+      fechaInicio: editingSanction?.fechaInicio || "",
+      fechaFin: editingSanction?.fechaFin || "",
+      observaciones: editingSanction?.observaciones || "",
+      actaPdf: editingSanction?.actaPdf || "",
     },
   });
 
-  const createMutation = useMutation({
-    mutationFn: (data: InsertClubSanction) => 
-      apiRequest("POST", "/api/club-sanctions", data),
+  const saveMutation = useMutation({
+    mutationFn: (data: InsertClubSanction) => {
+      if (editingSanction) {
+        return apiRequest("PUT", `/api/club-sanctions/${editingSanction.id}`, data);
+      } else {
+        return apiRequest("POST", "/api/club-sanctions", data);
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/club-sanctions"] });
       toast({
-        title: "Sanción creada",
-        description: "La sanción de club fue creada exitosamente",
+        title: editingSanction ? "Sanción actualizada" : "Sanción creada",
+        description: editingSanction ? "La sanción fue actualizada exitosamente" : "La sanción de club fue creada exitosamente",
       });
       form.reset();
       onClose();
@@ -122,15 +128,15 @@ export default function ClubSanctionModal({ isOpen, onClose }: ClubSanctionModal
     onError: (error: any) => {
       toast({
         title: "Error",
-        description: error.message || "No se pudo crear la sanción",
+        description: error.message || (editingSanction ? "No se pudo actualizar la sanción" : "No se pudo crear la sanción"),
         variant: "destructive",
       });
     },
   });
 
   const onSubmit = (data: InsertClubSanction) => {
-    const finalData = { ...data, actaPdf: uploadedActa || "" };
-    createMutation.mutate(finalData);
+    const finalData = { ...data, actaPdf: uploadedActa || editingSanction?.actaPdf || "" };
+    saveMutation.mutate(finalData);
   };
 
   const handleFileUploaded = (filePath: string) => {
@@ -147,7 +153,7 @@ export default function ClubSanctionModal({ isOpen, onClose }: ClubSanctionModal
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-gray-800">
-            Nueva Sanción Club
+            {editingSanction ? 'Editar Sanción Club' : 'Nueva Sanción Club'}
           </DialogTitle>
         </DialogHeader>
         
@@ -326,10 +332,10 @@ export default function ClubSanctionModal({ isOpen, onClose }: ClubSanctionModal
             <Button 
               type="submit" 
               className="flex-1 bg-blue-600 hover:bg-blue-700"
-              disabled={createMutation.isPending}
+              disabled={saveMutation.isPending}
               data-testid="button-save-club-sanction"
             >
-              {createMutation.isPending ? (
+              {saveMutation.isPending ? (
                 <>
                   <i className="fas fa-spinner fa-spin mr-2"></i>
                   Guardando...

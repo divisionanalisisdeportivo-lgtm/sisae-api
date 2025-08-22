@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ClubSanction } from "@shared/schema";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 const SPORTS = [
   'Fútbol', 'Básquetbol', 'Voleibol', 'Rugby', 'Hockey', 'Tenis', 
@@ -26,6 +28,9 @@ interface ClubesTabProps {
 
 export default function ClubesTab({ filters, onFiltersChange }: ClubesTabProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingSanction, setEditingSanction] = useState<ClubSanction | null>(null);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: clubSanctions = [], isLoading } = useQuery<ClubSanction[]>({
     queryKey: ["/api/club-sanctions"],
@@ -53,6 +58,41 @@ export default function ClubesTab({ filters, onFiltersChange }: ClubesTabProps) 
 
   const clearFilters = () => {
     onFiltersChange({ search: "", sport: "", status: "" });
+  };
+
+  // Delete mutation
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => apiRequest("DELETE", `/api/club-sanctions/${id}`, {}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/club-sanctions"] });
+      toast({
+        title: "Sanción eliminada",
+        description: "La sanción fue eliminada exitosamente",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "No se pudo eliminar la sanción",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleDelete = (sanction: ClubSanction) => {
+    if (confirm(`¿Está seguro de eliminar la sanción ${sanction.numeroCarga} del club ${sanction.nombreSancionado}?`)) {
+      deleteMutation.mutate(sanction.id);
+    }
+  };
+
+  const handleEdit = (sanction: ClubSanction) => {
+    setEditingSanction(sanction);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingSanction(null);
   };
 
   if (isLoading) {
@@ -165,7 +205,7 @@ export default function ClubesTab({ filters, onFiltersChange }: ClubesTabProps) 
             {filteredSanctions.map((sanction) => (
               <div 
                 key={sanction.id}
-                className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-md transition-shadow duration-300"
+                className={`bg-gradient-to-r ${isActive(sanction) ? 'from-red-50 to-orange-50 border-red-200' : 'from-green-50 to-emerald-50 border-green-200'} rounded-lg shadow-sm p-6 border hover:shadow-md transition-all duration-300`}
                 data-testid={`sanction-card-${sanction.id}`}
               >
                 <div className="flex justify-between items-start">
@@ -214,6 +254,27 @@ export default function ClubesTab({ filters, onFiltersChange }: ClubesTabProps) 
                       )}
                     </div>
                   </div>
+                  
+                  {/* Action Buttons */}
+                  <div className="flex flex-col gap-2 ml-4">
+                    <button
+                      onClick={() => handleEdit(sanction)}
+                      className="bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium px-3 py-1 rounded transition-colors duration-200 flex items-center gap-1"
+                      title="Editar sanción"
+                    >
+                      <i className="fas fa-edit"></i>
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => handleDelete(sanction)}
+                      className="bg-red-500 hover:bg-red-600 text-white text-xs font-medium px-3 py-1 rounded transition-colors duration-200 flex items-center gap-1"
+                      title="Eliminar sanción"
+                      disabled={deleteMutation.isPending}
+                    >
+                      <i className={`fas ${deleteMutation.isPending ? 'fa-spinner fa-spin' : 'fa-trash'}`}></i>
+                      {deleteMutation.isPending ? 'Eliminando...' : 'Eliminar'}
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -223,7 +284,8 @@ export default function ClubesTab({ filters, onFiltersChange }: ClubesTabProps) 
 
       <ClubSanctionModal 
         isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+        onClose={handleCloseModal}
+        editingSanction={editingSanction}
       />
     </div>
   );
