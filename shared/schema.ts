@@ -12,6 +12,7 @@ export const clubSanctions = pgTable("club_sanctions", {
   fechaInicio: text("fecha_inicio").notNull(),
   fechaFin: text("fecha_fin").notNull(),
   observaciones: text("observaciones"),
+  actaPdf: text("acta_pdf"),
   fechaCreacion: timestamp("fecha_creacion").defaultNow(),
 });
 
@@ -21,9 +22,11 @@ export const personalSanctions = pgTable("personal_sanctions", {
   dniPersona: text("dni_persona").notNull(),
   edadPersona: integer("edad_persona").notNull(),
   deporte: text("deporte").notNull(),
+  ubicacion: text("ubicacion").notNull(),
   fechaInicio: text("fecha_inicio").notNull(),
   fechaFin: text("fecha_fin").notNull(),
   observaciones: text("observaciones"),
+  actaPdf: text("acta_pdf"),
   fechaCreacion: timestamp("fecha_creacion").defaultNow(),
 });
 

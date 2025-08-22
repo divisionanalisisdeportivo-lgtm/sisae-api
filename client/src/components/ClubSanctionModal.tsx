@@ -10,6 +10,8 @@ import { insertClubSanctionSchema, type InsertClubSanction } from "@shared/schem
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { SimpleFileUploader } from "./SimpleFileUploader";
+import { useState } from "react";
 
 interface ClubSanctionModalProps {
   isOpen: boolean;
@@ -22,12 +24,40 @@ const SPORTS = [
   'Paddle', 'Golf', 'Ciclismo', 'Gimnasia', 'Handball'
 ];
 
-const UBICACIONES = ['Capital', 'Interior'];
+const UBICACIONES = [
+  'Capital',
+  'Calamuchita',
+  'Colón',
+  'Cruz del Eje',
+  'General Roca',
+  'General San Martín',
+  'Ischilín',
+  'Juárez Celman',
+  'Marcos Juárez',
+  'Minas',
+  'Pocho',
+  'Punilla',
+  'Río Cuarto',
+  'Río Primero',
+  'Río Seco',
+  'Río Segundo',
+  'San Alberto',
+  'San Javier',
+  'San Justo',
+  'Santa María',
+  'Sobremonte',
+  'Tercero Arriba',
+  'Totoral',
+  'Tulumba',
+  'Unión',
+  'Presidente Roque Sáenz Peña'
+];
 const TIPOS_SANCION = ['Suspensión', 'Multa', 'Amonestación'];
 
 export default function ClubSanctionModal({ isOpen, onClose }: ClubSanctionModalProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [uploadedActa, setUploadedActa] = useState<string | null>(null);
 
   const form = useForm<InsertClubSanction>({
     resolver: zodResolver(insertClubSanctionSchema),
@@ -39,6 +69,7 @@ export default function ClubSanctionModal({ isOpen, onClose }: ClubSanctionModal
       fechaInicio: "",
       fechaFin: "",
       observaciones: "",
+      actaPdf: "",
     },
   });
 
@@ -64,7 +95,12 @@ export default function ClubSanctionModal({ isOpen, onClose }: ClubSanctionModal
   });
 
   const onSubmit = (data: InsertClubSanction) => {
-    createMutation.mutate(data);
+    const finalData = { ...data, actaPdf: uploadedActa || "" };
+    createMutation.mutate(finalData);
+  };
+
+  const handleFileUploaded = (filePath: string) => {
+    setUploadedActa(filePath);
   };
 
   const handleClose = () => {
@@ -199,6 +235,28 @@ export default function ClubSanctionModal({ isOpen, onClose }: ClubSanctionModal
               rows={3}
               data-testid="textarea-observations"
             />
+          </div>
+
+          <div>
+            <Label className="text-gray-700 mb-2 block">Adjuntar Acta (PDF)</Label>
+            <div className="flex items-center space-x-4">
+              <SimpleFileUploader
+                onFileUploaded={handleFileUploaded}
+                buttonClassName="gov-button-secondary"
+              >
+                <i className="fas fa-paperclip mr-2"></i>
+                {uploadedActa ? 'Cambiar Acta PDF' : 'Adjuntar Acta PDF'}
+              </SimpleFileUploader>
+              {uploadedActa && (
+                <div className="flex items-center text-green-600">
+                  <i className="fas fa-check-circle mr-2"></i>
+                  <span className="text-sm">Acta cargada correctamente</span>
+                </div>
+              )}
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              Archivo opcional. Formato PDF, máximo 10MB
+            </p>
           </div>
           
           <div className="flex gap-4 pt-4">

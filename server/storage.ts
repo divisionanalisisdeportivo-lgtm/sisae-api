@@ -42,6 +42,7 @@ export class MemStorage implements IStorage {
       id,
       fechaCreacion: new Date(),
       observaciones: insertSanction.observaciones || null,
+      actaPdf: insertSanction.actaPdf || null,
     };
     this.clubSanctions.set(id, sanction);
     return sanction;
@@ -76,6 +77,7 @@ export class MemStorage implements IStorage {
       id,
       fechaCreacion: new Date(),
       observaciones: insertSanction.observaciones || null,
+      actaPdf: insertSanction.actaPdf || null,
     };
     this.personalSanctions.set(id, sanction);
     return sanction;
