@@ -214,37 +214,6 @@ export default function EstadisticasTab() {
     pdf.save(fileName);
   };
 
-  const generateExcelReport = () => {
-    const allData = [
-      ...clubSanctions.map(s => ({ ...s, tipo: 'Club' })),
-      ...personalSanctions.map(s => ({ ...s, tipo: 'Personal' }))
-    ];
-
-    console.log("Generando reporte Excel:", allData);
-    alert(`Archivo Excel generado exitosamente:
-    
-    📋 DATOS EXPORTADOS
-    - ${allData.length} registros de sanciones
-    - Incluye todas las columnas de datos
-    - Formato: SISAE_Completo_${new Date().toISOString().split('T')[0]}.xlsx
-    
-    El archivo se descargaría automáticamente.`);
-  };
-
-  const generateSummaryReport = () => {
-    const totalSanctions = clubSanctions.length + personalSanctions.length;
-    
-    console.log("Generando resumen ejecutivo");
-    alert(`Resumen Ejecutivo generado:
-    
-    📈 RESUMEN EJECUTIVO SISAE
-    - Total de sanciones procesadas: ${totalSanctions}
-    - Eficiencia del sistema: 100%
-    - Estado de cumplimiento: Actualizado
-    - Período: ${new Date().getFullYear()}
-    
-    Documento PDF de resumen ejecutivo listo para descarga.`);
-  };
 
   const activeSanctions = [...clubSanctions.filter(isActive), ...personalSanctions.filter(isActive)];
   const expiredSanctions = [...clubSanctions.filter(s => !isActive(s)), ...personalSanctions.filter(s => !isActive(s))];
@@ -563,27 +532,14 @@ export default function EstadisticasTab() {
         <h3 className="text-xl font-bold text-gray-800 mb-6">
           <i className="fas fa-download mr-2 text-gray-600"></i>Generar Reportes
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="flex justify-start">
           <button 
-            className="bg-red-600 hover:bg-red-700 text-white font-semibold py-4 px-6 rounded-lg transition-all duration-200 shadow-md transform hover:scale-105"
             onClick={generateStatisticsReport}
+            className="bg-red-700 hover:bg-red-800 text-white font-semibold py-4 px-6 rounded-md transition-all duration-200 shadow-sm hover:shadow-md border border-red-800 flex items-center space-x-2"
             data-testid="button-stats-pdf"
           >
-            <i className="fas fa-file-pdf mr-2"></i>Reporte General PDF
-          </button>
-          <button 
-            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded-lg transition-all duration-200 shadow-md transform hover:scale-105"
-            onClick={generateExcelReport}
-            data-testid="button-stats-excel"
-          >
-            <i className="fas fa-file-excel mr-2"></i>Exportar Excel
-          </button>
-          <button 
-            className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-4 px-6 rounded-lg transition-all duration-200 shadow-md transform hover:scale-105"
-            onClick={generateSummaryReport}
-            data-testid="button-summary-pdf"
-          >
-            <i className="fas fa-chart-line mr-2"></i>Resumen Ejecutivo
+            <i className="fas fa-file-pdf"></i>
+            <span>Reporte General PDF</span>
           </button>
         </div>
       </div>
