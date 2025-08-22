@@ -53,7 +53,7 @@ export default function EstadisticasTab() {
     // Statistics summary
     pdf.setFontSize(14);
     pdf.setTextColor(0, 0, 0);
-    pdf.text('📊 ESTADÍSTICAS GENERALES', 20, 65);
+    pdf.text('ESTADISTICAS GENERALES', 20, 65);
     
     pdf.setFontSize(12);
     pdf.text(`Total de sanciones: ${reportData.totalSanctions}`, 20, 80);
@@ -62,10 +62,43 @@ export default function EstadisticasTab() {
     pdf.text(`Sanciones activas: ${reportData.activeSanctions}`, 20, 110);
     pdf.text(`Sanciones vencidas: ${reportData.expiredSanctions}`, 20, 120);
     
+    // Add summary text
+    pdf.setFontSize(12);
+    pdf.setTextColor(60, 60, 60);
+    let currentY = 140;
+    
+    const summaryText = [
+      'RESUMEN EJECUTIVO:',
+      '',
+      `El sistema SISAE cuenta actualmente con ${reportData.totalSanctions} sanciones registradas.`,
+      `De estas, ${reportData.clubSanctions} corresponden a sanciones aplicadas a clubes deportivos`,
+      `y ${reportData.personalSanctions} son sanciones individuales del programa Tribuna Segura.`,
+      '',
+      `Estado actual: ${reportData.activeSanctions} sanciones se encuentran vigentes y`,
+      `${reportData.expiredSanctions} sanciones han sido cumplidas y estan vencidas.`,
+      '',
+      'Este reporte refleja la actividad sancionatoria de COSEDEPRO Cordoba',
+      'en el marco del Sistema Integral de Sanciones y Estadisticas.'
+    ];
+    
+    summaryText.forEach((line, index) => {
+      if (line === 'RESUMEN EJECUTIVO:') {
+        pdf.setFontSize(12);
+        pdf.setTextColor(0, 0, 0);
+      } else {
+        pdf.setFontSize(10);
+        pdf.setTextColor(60, 60, 60);
+      }
+      pdf.text(line, 20, currentY + (index * 12));
+    });
+    
+    currentY += summaryText.length * 12 + 20;
+    
     // Club sanctions table
     if (clubSanctions.length > 0) {
       pdf.setFontSize(14);
-      pdf.text('SANCIONES DE CLUBES', 20, 140);
+      pdf.setTextColor(0, 0, 0);
+      pdf.text('SANCIONES DE CLUBES', 20, currentY);
       
       const clubTableData = clubSanctions.map(sanction => [
         `C-${String(sanction.numeroCarga).padStart(3, '0')}`,
@@ -79,22 +112,22 @@ export default function EstadisticasTab() {
       ]);
       
       autoTable(pdf, {
-        head: [['Nº', 'Club', 'Deporte', 'Departamento', 'Tipo', 'Inicio', 'Fin', 'Estado']],
+        head: [['No', 'Club', 'Deporte', 'Departamento', 'Tipo', 'Inicio', 'Fin', 'Estado']],
         body: clubTableData,
-        startY: 150,
-        styles: { fontSize: 8, cellPadding: 1 },
+        startY: currentY + 10,
+        styles: { fontSize: 8, cellPadding: 2 },
         headStyles: { fillColor: [220, 38, 38], textColor: 255, fontSize: 9 },
         alternateRowStyles: { fillColor: [248, 248, 248] },
         margin: { left: 10, right: 10 },
       });
+      currentY = (pdf as any).lastAutoTable.finalY + 20;
     }
     
     // Personal sanctions table
     if (personalSanctions.length > 0) {
-      const startY = clubSanctions.length > 0 ? (pdf as any).lastAutoTable.finalY + 20 : 150;
-      
       pdf.setFontSize(14);
-      pdf.text('SANCIONES PERSONALES', 20, startY - 10);
+      pdf.setTextColor(0, 0, 0);
+      pdf.text('SANCIONES PERSONALES - TRIBUNA SEGURA', 20, currentY);
       
       const personalTableData = personalSanctions.map(sanction => [
         `TS-${String(sanction.numeroCarga).padStart(3, '0')}`,
@@ -108,22 +141,73 @@ export default function EstadisticasTab() {
       ]);
       
       autoTable(pdf, {
-        head: [['Nº', 'Persona', 'DNI', 'Deporte', 'Departamento', 'Inicio', 'Fin', 'Estado']],
+        head: [['No', 'Persona', 'DNI', 'Deporte', 'Departamento', 'Inicio', 'Fin', 'Estado']],
         body: personalTableData,
-        startY: startY,
-        styles: { fontSize: 8, cellPadding: 1 },
+        startY: currentY + 10,
+        styles: { fontSize: 8, cellPadding: 2 },
         headStyles: { fillColor: [220, 38, 38], textColor: 255, fontSize: 9 },
         alternateRowStyles: { fillColor: [248, 248, 248] },
         margin: { left: 10, right: 10 },
       });
+      currentY = (pdf as any).lastAutoTable.finalY + 20;
+    }
+    
+    // Add visual statistics representation
+    if (reportData.totalSanctions > 0) {
+      pdf.setFontSize(14);
+      pdf.setTextColor(0, 0, 0);
+      pdf.text('REPRESENTACION GRAFICA', 20, currentY);
+      
+      // Simple bar representation using text
+      const maxBarWidth = 100;
+      const totalSanctions = reportData.totalSanctions;
+      
+      pdf.setFontSize(10);
+      pdf.setTextColor(0, 0, 0);
+      
+      // Club sanctions bar
+      const clubBarWidth = totalSanctions > 0 ? (reportData.clubSanctions / totalSanctions) * maxBarWidth : 0;
+      pdf.text('Sanciones de Clubes:', 20, currentY + 20);
+      pdf.setFillColor(220, 38, 38);
+      if (clubBarWidth > 0) {
+        pdf.rect(20, currentY + 25, clubBarWidth, 8, 'F');
+      }
+      pdf.text(`${reportData.clubSanctions} (${totalSanctions > 0 ? Math.round((reportData.clubSanctions/totalSanctions)*100) : 0}%)`, clubBarWidth + 25, currentY + 31);
+      
+      // Personal sanctions bar  
+      const personalBarWidth = totalSanctions > 0 ? (reportData.personalSanctions / totalSanctions) * maxBarWidth : 0;
+      pdf.text('Sanciones Personales:', 20, currentY + 45);
+      pdf.setFillColor(139, 69, 19);
+      if (personalBarWidth > 0) {
+        pdf.rect(20, currentY + 50, personalBarWidth, 8, 'F');
+      }
+      pdf.text(`${reportData.personalSanctions} (${totalSanctions > 0 ? Math.round((reportData.personalSanctions/totalSanctions)*100) : 0}%)`, personalBarWidth + 25, currentY + 56);
+      
+      // Active vs Expired
+      pdf.text('Estado de Sanciones:', 20, currentY + 75);
+      const activeBarWidth = totalSanctions > 0 ? (reportData.activeSanctions / totalSanctions) * maxBarWidth : 0;
+      pdf.setFillColor(34, 197, 94);
+      if (activeBarWidth > 0) {
+        pdf.rect(20, currentY + 80, activeBarWidth, 8, 'F');
+      }
+      pdf.text(`Activas: ${reportData.activeSanctions}`, 25, currentY + 86);
+      
+      const expiredBarWidth = totalSanctions > 0 ? (reportData.expiredSanctions / totalSanctions) * maxBarWidth : 0;
+      pdf.setFillColor(156, 163, 175);
+      if (expiredBarWidth > 0) {
+        pdf.rect(20, currentY + 95, expiredBarWidth, 8, 'F');
+      }
+      pdf.text(`Vencidas: ${reportData.expiredSanctions}`, 25, currentY + 101);
+      
+      currentY += 120;
     }
     
     // Footer
-    const finalY = (pdf as any).lastAutoTable?.finalY || 130;
     pdf.setFontSize(10);
     pdf.setTextColor(100);
-    pdf.text('COSEDEPRO Córdoba - Sistema SISAE', 20, finalY + 20);
-    pdf.text(`Generado el ${new Date().toLocaleDateString('es-AR')} a las ${new Date().toLocaleTimeString('es-AR')}`, 20, finalY + 30);
+    pdf.text('COSEDEPRO Cordoba - Sistema SISAE', 20, currentY);
+    pdf.text(`Generado el ${new Date().toLocaleDateString('es-AR')} a las ${new Date().toLocaleTimeString('es-AR')}`, 20, currentY + 10);
+    pdf.text('Confidencial - Solo para uso interno de COSEDEPRO', 20, currentY + 20);
     
     // Download PDF
     const fileName = `Reporte_General_SISAE_${new Date().getFullYear()}_${(new Date().getMonth() + 1).toString().padStart(2, '0')}.pdf`;
