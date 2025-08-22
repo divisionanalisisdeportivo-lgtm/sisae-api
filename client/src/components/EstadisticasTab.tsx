@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell, LineChart, Line, AreaChart, Area, ResponsiveContainer } from 'recharts';
 import type { ClubSanction, PersonalSanction } from "@shared/schema";
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 function isActive(sanction: ClubSanction | PersonalSanction): boolean {
   const today = new Date();
@@ -32,17 +34,100 @@ export default function EstadisticasTab() {
     };
 
     console.log("Generando reporte general PDF:", reportData);
-    alert(`Reporte General generado exitosamente:
     
-    📊 ESTADÍSTICAS GENERALES
-    - Total de sanciones: ${reportData.totalSanctions}
-    - Sanciones de clubes: ${reportData.clubSanctions}
-    - Sanciones personales: ${reportData.personalSanctions}
-    - Sanciones activas: ${reportData.activeSanctions}
-    - Sanciones vencidas: ${reportData.expiredSanctions}
-    - Fecha: ${reportData.date}
+    // Generate PDF with jsPDF
+    const pdf = new jsPDF();
     
-    El archivo PDF se descargaría automáticamente.`);
+    // Header
+    pdf.setFontSize(18);
+    pdf.setTextColor(220, 38, 38); // Red color
+    pdf.text('SISAE - Sistema Integral de Sanciones y Estadísticas', 20, 20);
+    
+    pdf.setFontSize(16);
+    pdf.setTextColor(0, 0, 0);
+    pdf.text('Reporte General de Estadísticas', 20, 35);
+    
+    pdf.setFontSize(12);
+    pdf.text(`Fecha: ${reportData.date}`, 20, 45);
+    
+    // Statistics summary
+    pdf.setFontSize(14);
+    pdf.setTextColor(0, 0, 0);
+    pdf.text('📊 ESTADÍSTICAS GENERALES', 20, 65);
+    
+    pdf.setFontSize(12);
+    pdf.text(`Total de sanciones: ${reportData.totalSanctions}`, 20, 80);
+    pdf.text(`Sanciones de clubes: ${reportData.clubSanctions}`, 20, 90);
+    pdf.text(`Sanciones personales: ${reportData.personalSanctions}`, 20, 100);
+    pdf.text(`Sanciones activas: ${reportData.activeSanctions}`, 20, 110);
+    pdf.text(`Sanciones vencidas: ${reportData.expiredSanctions}`, 20, 120);
+    
+    // Club sanctions table
+    if (clubSanctions.length > 0) {
+      pdf.setFontSize(14);
+      pdf.text('SANCIONES DE CLUBES', 20, 140);
+      
+      const clubTableData = clubSanctions.map(sanction => [
+        `C-${String(sanction.numeroCarga).padStart(3, '0')}`,
+        sanction.nombreSancionado,
+        sanction.deporte,
+        sanction.ubicacion,
+        sanction.tipoSancion,
+        sanction.fechaInicio,
+        sanction.fechaFin,
+        isActive(sanction) ? 'Activa' : 'Vencida'
+      ]);
+      
+      autoTable(pdf, {
+        head: [['Nº', 'Club', 'Deporte', 'Departamento', 'Tipo', 'Inicio', 'Fin', 'Estado']],
+        body: clubTableData,
+        startY: 150,
+        styles: { fontSize: 8, cellPadding: 1 },
+        headStyles: { fillColor: [220, 38, 38], textColor: 255, fontSize: 9 },
+        alternateRowStyles: { fillColor: [248, 248, 248] },
+        margin: { left: 10, right: 10 },
+      });
+    }
+    
+    // Personal sanctions table
+    if (personalSanctions.length > 0) {
+      const startY = clubSanctions.length > 0 ? (pdf as any).lastAutoTable.finalY + 20 : 150;
+      
+      pdf.setFontSize(14);
+      pdf.text('SANCIONES PERSONALES', 20, startY - 10);
+      
+      const personalTableData = personalSanctions.map(sanction => [
+        `TS-${String(sanction.numeroCarga).padStart(3, '0')}`,
+        sanction.nombrePersona,
+        sanction.dniPersona,
+        sanction.deporte,
+        sanction.ubicacion,
+        sanction.fechaInicio,
+        sanction.fechaFin,
+        isActive(sanction) ? 'Activa' : 'Vencida'
+      ]);
+      
+      autoTable(pdf, {
+        head: [['Nº', 'Persona', 'DNI', 'Deporte', 'Departamento', 'Inicio', 'Fin', 'Estado']],
+        body: personalTableData,
+        startY: startY,
+        styles: { fontSize: 8, cellPadding: 1 },
+        headStyles: { fillColor: [220, 38, 38], textColor: 255, fontSize: 9 },
+        alternateRowStyles: { fillColor: [248, 248, 248] },
+        margin: { left: 10, right: 10 },
+      });
+    }
+    
+    // Footer
+    const finalY = (pdf as any).lastAutoTable?.finalY || 130;
+    pdf.setFontSize(10);
+    pdf.setTextColor(100);
+    pdf.text('COSEDEPRO Córdoba - Sistema SISAE', 20, finalY + 20);
+    pdf.text(`Generado el ${new Date().toLocaleDateString('es-AR')} a las ${new Date().toLocaleTimeString('es-AR')}`, 20, finalY + 30);
+    
+    // Download PDF
+    const fileName = `Reporte_General_SISAE_${new Date().getFullYear()}_${(new Date().getMonth() + 1).toString().padStart(2, '0')}.pdf`;
+    pdf.save(fileName);
   };
 
   const generateExcelReport = () => {

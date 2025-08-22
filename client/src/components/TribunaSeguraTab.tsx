@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { PersonalSanction } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const SPORTS = [
   'Fútbol', 'Básquetbol', 'Voleibol', 'Rugby', 'Hockey', 'Tenis', 
@@ -110,15 +112,77 @@ export default function TribunaSeguraTab({ filters, onFiltersChange }: TribunaSe
         return;
       }
       
-      // In a real implementation, you would use a PDF library like jsPDF
-      console.log("Generando reporte PDF mensual de Tribuna Segura:", reportData);
-      
       const confirmGenerate = confirm(`Reporte Mensual de Tribuna Segura:\\n\\n` +
         `- Personas con sanciones cumplidas: ${reportData.totalSanctions}\\n\\n` +
         `Una vez generado el reporte, estas personas no volverán a aparecer en futuros reportes mensuales.\\n\\n` +
+        `El archivo PDF se descargará automáticamente.\\n\\n` +
         `¿Desea generar el reporte PDF?`);
       
       if (confirmGenerate) {
+        // Generate PDF with jsPDF
+        console.log("Generando reporte PDF mensual de Tribuna Segura:", reportData);
+        
+        const pdf = new jsPDF();
+        
+        // Header
+        pdf.setFontSize(18);
+        pdf.setTextColor(220, 38, 38); // Red color
+        pdf.text('SISAE - Sistema Integral de Sanciones y Estadísticas', 20, 20);
+        
+        pdf.setFontSize(16);
+        pdf.setTextColor(0, 0, 0);
+        pdf.text('Reporte Mensual de Tribuna Segura', 20, 35);
+        
+        pdf.setFontSize(12);
+        pdf.text(`Fecha: ${reportData.date}`, 20, 45);
+        pdf.text(`Total de personas con sanciones cumplidas: ${reportData.totalSanctions}`, 20, 55);
+        
+        // Table data
+        const tableData = reportData.sanctions.map((sanction: any) => [
+          `TS-${String(sanction.numeroCarga).padStart(3, '0')}`,
+          sanction.nombrePersona,
+          sanction.dniPersona,
+          `${sanction.edadPersona} años`,
+          sanction.deporte,
+          sanction.ubicacion,
+          sanction.motivoSancion,
+          sanction.fechaInicio,
+          sanction.fechaFin,
+          sanction.observaciones || 'Sin observaciones'
+        ]);
+        
+        // Add table
+        autoTable(pdf, {
+          head: [['Nº Carga', 'Nombre', 'DNI', 'Edad', 'Deporte', 'Departamento', 'Motivo', 'Inicio', 'Fin', 'Observaciones']],
+          body: tableData,
+          startY: 70,
+          styles: {
+            fontSize: 8,
+            cellPadding: 2,
+          },
+          headStyles: {
+            fillColor: [220, 38, 38],
+            textColor: 255,
+            fontSize: 9,
+            fontStyle: 'bold'
+          },
+          alternateRowStyles: {
+            fillColor: [248, 248, 248]
+          },
+          margin: { left: 10, right: 10 },
+        });
+        
+        // Footer
+        const finalY = (pdf as any).lastAutoTable.finalY + 20;
+        pdf.setFontSize(10);
+        pdf.setTextColor(100);
+        pdf.text('COSEDEPRO Córdoba - Sistema SISAE', 20, finalY);
+        pdf.text(`Generado el ${new Date().toLocaleDateString('es-AR')} a las ${new Date().toLocaleTimeString('es-AR')}`, 20, finalY + 10);
+        
+        // Download PDF
+        const fileName = `Reporte_Tribuna_Segura_${new Date().getFullYear()}_${(new Date().getMonth() + 1).toString().padStart(2, '0')}.pdf`;
+        pdf.save(fileName);
+        
         // Mark sanctions as reported
         const sanctionIds = reportData.sanctions.map((s: any) => s.id);
         const markResponse = await fetch('/api/mark-reported', {
@@ -129,8 +193,8 @@ export default function TribunaSeguraTab({ filters, onFiltersChange }: TribunaSe
         
         if (markResponse.ok) {
           toast({
-            title: "Reporte generado exitosamente",
-            description: `Se reportaron ${reportData.totalSanctions} personas con sanciones cumplidas`,
+            title: "Reporte generado y descargado",
+            description: `Se reportaron ${reportData.totalSanctions} personas con sanciones cumplidas. El archivo PDF se descargó automáticamente.`,
           });
           
           // Refresh the data to reflect the changes
