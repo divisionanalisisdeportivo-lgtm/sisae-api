@@ -68,17 +68,6 @@ export default function ClubesTab({ filters, onFiltersChange }: ClubesTabProps) 
 
   return (
     <div className="space-y-6">
-      {/* Stats Card */}
-      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-gray-600 text-sm font-medium">Total Sanciones Clubes</p>
-            <p className="text-3xl font-bold text-gray-800" data-testid="count-club-sanctions">{clubSanctions.length}</p>
-          </div>
-          <i className="fas fa-users text-blue-500 text-3xl"></i>
-        </div>
-      </div>
-
       {/* Action Button */}
       <div className="flex justify-center">
         <button 
