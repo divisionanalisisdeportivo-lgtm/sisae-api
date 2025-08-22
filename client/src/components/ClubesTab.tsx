@@ -79,14 +79,21 @@ export default function ClubesTab({ filters, onFiltersChange }: ClubesTabProps) 
         </div>
       </div>
 
-      {/* Action Button */}
-      <div className="flex justify-center">
+      {/* Action Buttons */}
+      <div className="flex justify-center space-x-4">
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-8 rounded-lg transition-colors shadow-md"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-8 rounded-lg transition-colors shadow-md transform hover:scale-105"
           data-testid="button-new-club-sanction"
         >
           <i className="fas fa-plus mr-2"></i>Nueva Sanción Club
+        </button>
+        <button 
+          onClick={() => alert('Reporte de clubes próximamente')}
+          className="bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors shadow-md transform hover:scale-105"
+          data-testid="button-export-clubs"
+        >
+          <i className="fas fa-file-pdf mr-2"></i>Exportar PDF
         </button>
       </div>
 

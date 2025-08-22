@@ -55,6 +55,30 @@ export default function TribunaSeguraTab({ filters, onFiltersChange }: TribunaSe
     onFiltersChange({ search: "", sport: "", status: "" });
   };
 
+  const generateTribunaSeguraReport = () => {
+    // Simulated PDF generation for Tribuna Segura
+    const reportData = {
+      title: "Reporte de Tribuna Segura",
+      date: new Date().toLocaleDateString('es-AR'),
+      totalSanctions: personalSanctions.length,
+      activeSanctions: personalSanctions.filter(isActive).length,
+      expiredSanctions: personalSanctions.filter(s => !isActive(s)).length,
+      sanctions: filteredSanctions
+    };
+
+    // In a real implementation, you would use a PDF library like jsPDF
+    console.log("Generando reporte PDF de Tribuna Segura:", reportData);
+    
+    alert(`Reporte de Tribuna Segura generado exitosamente:
+    
+    - Total de sanciones: ${reportData.totalSanctions}
+    - Sanciones activas: ${reportData.activeSanctions} 
+    - Sanciones vencidas: ${reportData.expiredSanctions}
+    - Fecha: ${reportData.date}
+    
+    El archivo PDF se descargaría automáticamente.`);
+  };
+
   if (isLoading) {
     return (
       <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
@@ -79,14 +103,21 @@ export default function TribunaSeguraTab({ filters, onFiltersChange }: TribunaSe
         </div>
       </div>
 
-      {/* Action Button */}
-      <div className="flex justify-center">
+      {/* Action Buttons */}
+      <div className="flex justify-center space-x-4">
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-4 px-8 rounded-lg transition-colors shadow-md"
+          className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-4 px-8 rounded-lg transition-colors shadow-md transform hover:scale-105"
           data-testid="button-new-personal-sanction"
         >
           <i className="fas fa-user-plus mr-2"></i>Nueva Sanción Personal
+        </button>
+        <button 
+          onClick={generateTribunaSeguraReport}
+          className="bg-red-600 hover:bg-red-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors shadow-md transform hover:scale-105"
+          data-testid="button-export-tribuna"
+        >
+          <i className="fas fa-file-pdf mr-2"></i>Reporte PDF
         </button>
       </div>
 

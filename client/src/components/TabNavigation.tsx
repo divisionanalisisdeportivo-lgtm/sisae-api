@@ -11,22 +11,22 @@ export default function TabNavigation({ activeTab, onTabChange }: TabNavigationP
   ];
 
   return (
-    <div className="bg-white border-b border-gray-200">
-      <div className="container mx-auto px-4">
-        <div className="flex space-x-8">
+    <div className="bg-white border-b border-gray-200 shadow-sm">
+      <div className="container mx-auto px-6">
+        <div className="flex justify-center space-x-12">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
-              className={`flex items-center space-x-2 py-4 px-2 border-b-3 font-medium text-sm transition-colors ${
+              className={`flex items-center space-x-3 py-5 px-4 border-b-3 font-semibold text-base transition-all duration-200 ${
                 activeTab === tab.id
-                  ? 'border-blue-600 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'border-blue-600 text-blue-600 bg-blue-50'
+                  : 'border-transparent text-gray-600 hover:text-blue-600 hover:border-blue-300 hover:bg-gray-50'
               }`}
               data-testid={`tab-${tab.id}`}
             >
-              <i className={`${tab.icon} text-lg`}></i>
-              <span>{tab.label}</span>
+              <i className={`${tab.icon} text-xl`}></i>
+              <span className="font-medium">{tab.label}</span>
             </button>
           ))}
         </div>
