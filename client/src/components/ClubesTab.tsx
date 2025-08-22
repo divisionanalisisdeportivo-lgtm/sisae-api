@@ -32,9 +32,29 @@ export default function ClubesTab({ filters, onFiltersChange }: ClubesTabProps) 
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: clubSanctions = [], isLoading } = useQuery<ClubSanction[]>({
+  const { data: clubSanctions = [], isLoading, error, isError } = useQuery<ClubSanction[]>({
     queryKey: ["/api/club-sanctions"],
+    retry: 3,
+    retryDelay: 1000,
   });
+
+  if (isError) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-red-600 mb-4">
+          <i className="fas fa-exclamation-triangle text-4xl"></i>
+        </div>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">Error al cargar las sanciones</h3>
+        <p className="text-gray-600 mb-4">No se pudieron cargar los datos. Por favor, intenta nuevamente.</p>
+        <button 
+          onClick={() => window.location.reload()} 
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Recargar página
+        </button>
+      </div>
+    );
+  }
 
   // Filter sanctions based on current filters
   const filteredSanctions = clubSanctions.filter((sanction) => {

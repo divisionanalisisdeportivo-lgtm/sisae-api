@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Header from "@/components/Header";
 import TabNavigation from "@/components/TabNavigation";
 import ClubesTab from "@/components/ClubesTab";
 import TribunaSeguraTab from "@/components/TribunaSeguraTab";
 import EstadisticasTab from "@/components/EstadisticasTab";
 import AdministrarTab from "@/components/AdministrarTab";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import { useAuth } from "@/hooks/use-auth";
+import { Loader2 } from "lucide-react";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -17,18 +19,33 @@ export default function Dashboard() {
   });
 
   const renderTabContent = () => {
-    switch (activeTab) {
-      case 'clubes':
-        return <ClubesTab filters={filters} onFiltersChange={setFilters} />;
-      case 'tribuna':
-        return <TribunaSeguraTab filters={filters} onFiltersChange={setFilters} />;
-      case 'estadisticas':
-        return <EstadisticasTab />;
-      case 'administrar':
-        return <AdministrarTab />;
-      default:
-        return <ClubesTab filters={filters} onFiltersChange={setFilters} />;
-    }
+    return (
+      <ErrorBoundary>
+        <Suspense fallback={
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <Loader2 className="h-8 w-8 animate-spin text-blue-600 mx-auto mb-2" />
+              <p className="text-gray-600">Cargando...</p>
+            </div>
+          </div>
+        }>
+          {(() => {
+            switch (activeTab) {
+              case 'clubes':
+                return <ClubesTab filters={filters} onFiltersChange={setFilters} />;
+              case 'tribuna':
+                return <TribunaSeguraTab filters={filters} onFiltersChange={setFilters} />;
+              case 'estadisticas':
+                return <EstadisticasTab />;
+              case 'administrar':
+                return <AdministrarTab />;
+              default:
+                return <ClubesTab filters={filters} onFiltersChange={setFilters} />;
+            }
+          })()}
+        </Suspense>
+      </ErrorBoundary>
+    );
   };
 
   return (

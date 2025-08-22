@@ -11,13 +11,46 @@ function isActive(sanction: ClubSanction | PersonalSanction): boolean {
 }
 
 export default function EstadisticasTab() {
-  const { data: clubSanctions = [] } = useQuery<ClubSanction[]>({
+  const { data: clubSanctions = [], isLoading: isLoadingClub, isError: isErrorClub } = useQuery<ClubSanction[]>({
     queryKey: ["/api/club-sanctions"],
+    retry: 3,
+    retryDelay: 1000,
   });
 
-  const { data: personalSanctions = [] } = useQuery<PersonalSanction[]>({
+  const { data: personalSanctions = [], isLoading: isLoadingPersonal, isError: isErrorPersonal } = useQuery<PersonalSanction[]>({
     queryKey: ["/api/personal-sanctions"],
+    retry: 3,
+    retryDelay: 1000,
   });
+
+  if (isErrorClub || isErrorPersonal) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-red-600 mb-4">
+          <i className="fas fa-exclamation-triangle text-4xl"></i>
+        </div>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">Error al cargar las estadísticas</h3>
+        <p className="text-gray-600 mb-4">No se pudieron cargar los datos. Por favor, intenta nuevamente.</p>
+        <button 
+          onClick={() => window.location.reload()} 
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Recargar página
+        </button>
+      </div>
+    );
+  }
+
+  const isLoading = isLoadingClub || isLoadingPersonal;
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-12">
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+        <p className="mt-2 text-gray-600">Cargando estadísticas...</p>
+      </div>
+    );
+  }
 
   const generateStatisticsReport = () => {
     const totalSanctions = clubSanctions.length + personalSanctions.length;
