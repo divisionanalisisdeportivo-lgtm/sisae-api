@@ -22,7 +22,7 @@ export default function DashboardCards() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300" data-testid="card-club-sanctions">
+      <div className="glassmorphism-card p-6 hover:bg-white/15 transition-all duration-300 shadow-lg" data-testid="card-club-sanctions">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-blue-100 text-sm">Total Sanciones Clubes</p>
@@ -32,7 +32,7 @@ export default function DashboardCards() {
         </div>
       </div>
       
-      <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300" data-testid="card-personal-sanctions">
+      <div className="glassmorphism-card p-6 hover:bg-white/15 transition-all duration-300 shadow-lg" data-testid="card-personal-sanctions">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-blue-100 text-sm">Sanciones Personales</p>
@@ -42,7 +42,7 @@ export default function DashboardCards() {
         </div>
       </div>
       
-      <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300" data-testid="card-active-sanctions">
+      <div className="glassmorphism-card p-6 hover:bg-white/15 transition-all duration-300 shadow-lg" data-testid="card-active-sanctions">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-blue-100 text-sm">Activas</p>
@@ -52,7 +52,7 @@ export default function DashboardCards() {
         </div>
       </div>
       
-      <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300" data-testid="card-expired-sanctions">
+      <div className="glassmorphism-card p-6 hover:bg-white/15 transition-all duration-300 shadow-lg" data-testid="card-expired-sanctions">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-blue-100 text-sm">Vencidas</p>

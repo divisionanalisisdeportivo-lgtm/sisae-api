@@ -20,11 +20,11 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="bg-white/10 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
+    <header className="glassmorphism sticky top-0 z-50 border-b border-white/20">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full border-2 border-white/30 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full border-2 border-white/30 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg">
               <i className="fas fa-gavel text-white text-xl" data-testid="logo-icon"></i>
             </div>
             <div>
@@ -34,6 +34,7 @@ export default function Header() {
           </div>
           
           <div 
+            id="status"
             className={`hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-full backdrop-blur-sm border ${
               isOnline 
                 ? 'bg-green-500/20 border-green-400/30' 

@@ -111,7 +111,7 @@ export default function SanctionsList({ filters }: SanctionsListProps) {
 
   if (clubLoading || personalLoading) {
     return (
-      <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
+      <div className="glassmorphism-card p-6 shadow-lg">
         <div className="text-center py-8">
           <i className="fas fa-spinner fa-spin text-4xl text-blue-300 mb-4"></i>
           <p className="text-blue-100">Cargando sanciones...</p>
@@ -121,7 +121,7 @@ export default function SanctionsList({ filters }: SanctionsListProps) {
   }
 
   return (
-    <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
+    <div className="glassmorphism-card p-6 shadow-lg">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-bold text-white">
           <i className="fas fa-list mr-2"></i>Todas las Sanciones

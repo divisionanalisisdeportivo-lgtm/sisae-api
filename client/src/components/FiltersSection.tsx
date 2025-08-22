@@ -25,7 +25,7 @@ export default function FiltersSection({ filters, onFiltersChange }: FiltersSect
   };
 
   return (
-    <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 mb-8">
+    <div className="glassmorphism-card p-6 mb-8 shadow-lg">
       <h3 className="text-xl font-bold text-white mb-4">
         <i className="fas fa-filter mr-2"></i>Filtros
       </h3>
@@ -37,7 +37,7 @@ export default function FiltersSection({ filters, onFiltersChange }: FiltersSect
             placeholder="Nombre, deporte, ubicación..." 
             value={filters.search}
             onChange={(e) => handleFilterChange('search', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80 text-gray-800 placeholder-gray-500"
+            className="glassmorphism-input w-full px-4 py-3 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none transition-all duration-200"
             data-testid="input-search-filter"
           />
         </div>
@@ -47,7 +47,7 @@ export default function FiltersSection({ filters, onFiltersChange }: FiltersSect
           <select 
             value={filters.sport}
             onChange={(e) => handleFilterChange('sport', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80 text-gray-800"
+            className="glassmorphism-input w-full px-4 py-3 rounded-lg text-gray-800 focus:outline-none transition-all duration-200"
             data-testid="select-sport-filter"
           >
             <option value="">Todos los deportes</option>
@@ -62,7 +62,7 @@ export default function FiltersSection({ filters, onFiltersChange }: FiltersSect
           <select 
             value={filters.status}
             onChange={(e) => handleFilterChange('status', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80 text-gray-800"
+            className="glassmorphism-input w-full px-4 py-3 rounded-lg text-gray-800 focus:outline-none transition-all duration-200"
             data-testid="select-status-filter"
           >
             <option value="">Todos</option>
@@ -74,12 +74,18 @@ export default function FiltersSection({ filters, onFiltersChange }: FiltersSect
         <div className="flex items-end">
           <button 
             onClick={clearFilters}
-            className="w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+            className="w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-lg transition-colors shadow-md"
             data-testid="button-clear-filters"
           >
             <i className="fas fa-broom mr-2"></i>Limpiar
           </button>
         </div>
+      </div>
+      
+      <div className="mt-4 text-center">
+        <span className="text-blue-100 font-medium">
+          {filters.search || filters.sport || filters.status ? 'Filtros aplicados' : 'Sin filtros activos'}
+        </span>
       </div>
     </div>
   );
