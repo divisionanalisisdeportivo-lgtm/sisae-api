@@ -6,12 +6,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertClubSanctionSchema, type InsertClubSanction } from "@shared/schema";
+import { insertClubSanctionSchema, type InsertClubSanction, type ClubSanction } from "@shared/schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { SimpleFileUploader } from "./SimpleFileUploader";
 import { useState } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface ClubSanctionModalProps {
   isOpen: boolean;
@@ -100,7 +101,7 @@ export default function ClubSanctionModal({ isOpen, onClose, editingSanction }: 
       deporte: editingSanction?.deporte || "",
       ubicacion: editingSanction?.ubicacion || "",
       tipoSancion: editingSanction?.tipoSancion || "",
-      motivoSancion: editingSanction?.motivoSancion || "",
+      motivoSancion: editingSanction?.motivoSancion || [],
       fechaInicio: editingSanction?.fechaInicio || "",
       fechaFin: editingSanction?.fechaFin || "",
       observaciones: editingSanction?.observaciones || "",
@@ -246,23 +247,42 @@ export default function ClubSanctionModal({ isOpen, onClose, editingSanction }: 
               )}
             </div>
             
-            <div>
-              <Label htmlFor="motivoSancion">Motivo de la Sanción *</Label>
-              <Select
-                value={form.watch("motivoSancion")}
-                onValueChange={(value) => form.setValue("motivoSancion", value)}
-              >
-                <SelectTrigger data-testid="select-sanction-reason">
-                  <SelectValue placeholder="Seleccionar motivo" />
-                </SelectTrigger>
-                <SelectContent>
-                  {MOTIVOS_SANCION.map((motivo) => (
-                    <SelectItem key={motivo} value={motivo}>
-                      {motivo}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="md:col-span-2">
+              <Label htmlFor="motivoSancion">Motivos de la Sanción * (Seleccione uno o más)</Label>
+              <div className="mt-2 max-h-48 overflow-y-auto border border-gray-300 rounded-md p-3 bg-gray-50">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  {MOTIVOS_SANCION.map((motivo) => {
+                    const selectedMotivos = form.watch("motivoSancion") || [];
+                    const isChecked = selectedMotivos.includes(motivo);
+                    return (
+                      <div key={motivo} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`motivo-${motivo}`}
+                          checked={isChecked}
+                          onCheckedChange={(checked) => {
+                            const currentMotivos = form.watch("motivoSancion") || [];
+                            if (checked) {
+                              form.setValue("motivoSancion", [...currentMotivos, motivo]);
+                            } else {
+                              form.setValue("motivoSancion", currentMotivos.filter(m => m !== motivo));
+                            }
+                          }}
+                          data-testid={`checkbox-motivo-${motivo.toLowerCase().replace(/\s+/g, '-')}`}
+                        />
+                        <Label 
+                          htmlFor={`motivo-${motivo}`} 
+                          className="text-sm font-normal cursor-pointer leading-tight"
+                        >
+                          {motivo}
+                        </Label>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="mt-1 text-xs text-gray-500">
+                {form.watch("motivoSancion")?.length || 0} motivo(s) seleccionado(s)
+              </div>
               {form.formState.errors.motivoSancion && (
                 <p className="text-red-500 text-sm">{form.formState.errors.motivoSancion.message}</p>
               )}

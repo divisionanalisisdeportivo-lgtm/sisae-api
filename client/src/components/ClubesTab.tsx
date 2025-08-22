@@ -256,8 +256,20 @@ export default function ClubesTab({ filters, onFiltersChange }: ClubesTabProps) 
                         <p className="text-gray-800">{sanction.tipoSancion}</p>
                       </div>
                       <div>
-                        <span className="font-medium text-gray-600">Motivo:</span>
-                        <p className="text-gray-800">{(sanction as any).motivoSancion || 'No especificado'}</p>
+                        <span className="font-medium text-gray-600">Motivos:</span>
+                        <div className="text-gray-800">
+                          {Array.isArray(sanction.motivoSancion) && sanction.motivoSancion.length > 0 ? (
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {sanction.motivoSancion.map((motivo, index) => (
+                                <span key={index} className="inline-block bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">
+                                  {motivo}
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-gray-500 text-sm">No especificado</p>
+                          )}
+                        </div>
                       </div>
                     </div>
                     
