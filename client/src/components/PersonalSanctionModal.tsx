@@ -24,6 +24,13 @@ const SPORTS = [
   'Paddle', 'Golf', 'Ciclismo', 'Gimnasia', 'Handball'
 ];
 
+const MOTIVOS_TRIBUNA_SEGURA = [
+  'Pedido de captura',
+  'Derecho de admisión',
+  'Prohibición de concurrencia',
+  'Restricción de concurrencia administrativa'
+];
+
 const UBICACIONES = [
   'Capital',
   'Calamuchita',
@@ -66,6 +73,7 @@ export default function PersonalSanctionModal({ isOpen, onClose }: PersonalSanct
       edadPersona: 18,
       deporte: "",
       ubicacion: "",
+      motivoSancion: "",
       fechaInicio: "",
       fechaFin: "",
       observaciones: "",
@@ -202,6 +210,28 @@ export default function PersonalSanctionModal({ isOpen, onClose }: PersonalSanct
               </Select>
               {form.formState.errors.ubicacion && (
                 <p className="text-red-500 text-sm">{form.formState.errors.ubicacion.message}</p>
+              )}
+            </div>
+            
+            <div>
+              <Label htmlFor="motivoSancion">Motivo de la Sanción *</Label>
+              <Select
+                value={form.watch("motivoSancion")}
+                onValueChange={(value) => form.setValue("motivoSancion", value)}
+              >
+                <SelectTrigger data-testid="select-person-sanction-reason">
+                  <SelectValue placeholder="Seleccionar motivo" />
+                </SelectTrigger>
+                <SelectContent>
+                  {MOTIVOS_TRIBUNA_SEGURA.map((motivo) => (
+                    <SelectItem key={motivo} value={motivo}>
+                      {motivo}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {form.formState.errors.motivoSancion && (
+                <p className="text-red-500 text-sm">{form.formState.errors.motivoSancion.message}</p>
               )}
             </div>
             

@@ -213,7 +213,7 @@ export default function TribunaSeguraTab({ filters, onFiltersChange }: TribunaSe
                       </span>
                     </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
                       <div>
                         <span className="font-medium text-gray-600">DNI:</span>
                         <p className="text-gray-800">{sanction.dniPersona}</p>
@@ -226,6 +226,15 @@ export default function TribunaSeguraTab({ filters, onFiltersChange }: TribunaSe
                         <span className="font-medium text-gray-600">Deporte:</span>
                         <p className="text-gray-800">{sanction.deporte}</p>
                       </div>
+                      <div>
+                        <span className="font-medium text-gray-600">Departamento:</span>
+                        <p className="text-gray-800">{(sanction as any).ubicacion || 'No especificado'}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-3">
+                      <span className="font-medium text-gray-600">Motivo:</span>
+                      <p className="text-gray-800 font-medium">{(sanction as any).motivoSancion || 'No especificado'}</p>
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mt-3">

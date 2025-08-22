@@ -24,6 +24,7 @@ export const personalSanctions = pgTable("personal_sanctions", {
   edadPersona: integer("edad_persona").notNull(),
   deporte: text("deporte").notNull(),
   ubicacion: text("ubicacion").notNull(),
+  motivoSancion: text("motivo_sancion").notNull(),
   fechaInicio: text("fecha_inicio").notNull(),
   fechaFin: text("fecha_fin").notNull(),
   observaciones: text("observaciones"),
