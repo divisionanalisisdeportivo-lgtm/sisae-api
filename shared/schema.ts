@@ -36,11 +36,13 @@ export const personalSanctions = pgTable("personal_sanctions", {
 
 export const insertClubSanctionSchema = createInsertSchema(clubSanctions).omit({
   id: true,
+  numeroCarga: true,
   fechaCreacion: true,
 });
 
 export const insertPersonalSanctionSchema = createInsertSchema(personalSanctions).omit({
   id: true,
+  numeroCarga: true,
   fechaCreacion: true,
 });
 
