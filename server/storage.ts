@@ -1,4 +1,6 @@
-import { type ClubSanction, type PersonalSanction, type InsertClubSanction, type InsertPersonalSanction } from "@shared/schema";
+import { type ClubSanction, type PersonalSanction, type InsertClubSanction, type InsertPersonalSanction, clubSanctions, personalSanctions } from "@shared/schema";
+import { db } from "./db";
+import { eq, and, lt, max } from "drizzle-orm";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -167,4 +169,120 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  // Helper methods for getting next available numbers
+  private async getNextClubNumber(): Promise<number> {
+    const result = await db.select({ maxNumber: max(clubSanctions.numeroCarga) })
+      .from(clubSanctions);
+    return (result[0]?.maxNumber || 0) + 1;
+  }
+
+  private async getNextPersonalNumber(): Promise<number> {
+    const result = await db.select({ maxNumber: max(personalSanctions.numeroCarga) })
+      .from(personalSanctions);
+    return (result[0]?.maxNumber || 0) + 1;
+  }
+
+  // Club sanctions methods
+  async getClubSanctions(): Promise<ClubSanction[]> {
+    return await db.select().from(clubSanctions).orderBy(clubSanctions.fechaCreacion);
+  }
+
+  async getClubSanction(id: string): Promise<ClubSanction | undefined> {
+    const [sanction] = await db.select().from(clubSanctions).where(eq(clubSanctions.id, id));
+    return sanction || undefined;
+  }
+
+  async createClubSanction(insertSanction: InsertClubSanction): Promise<ClubSanction> {
+    const numeroCarga = await this.getNextClubNumber();
+    const [sanction] = await db
+      .insert(clubSanctions)
+      .values({
+        ...insertSanction,
+        numeroCarga,
+      })
+      .returning();
+    return sanction;
+  }
+
+  async updateClubSanction(id: string, updateData: Partial<InsertClubSanction>): Promise<ClubSanction | undefined> {
+    const [sanction] = await db
+      .update(clubSanctions)
+      .set(updateData)
+      .where(eq(clubSanctions.id, id))
+      .returning();
+    return sanction || undefined;
+  }
+
+  async deleteClubSanction(id: string): Promise<boolean> {
+    const result = await db.delete(clubSanctions).where(eq(clubSanctions.id, id));
+    return result.rowCount !== null && result.rowCount > 0;
+  }
+
+  // Personal sanctions methods
+  async getPersonalSanctions(): Promise<PersonalSanction[]> {
+    return await db.select().from(personalSanctions).orderBy(personalSanctions.fechaCreacion);
+  }
+
+  async getPersonalSanction(id: string): Promise<PersonalSanction | undefined> {
+    const [sanction] = await db.select().from(personalSanctions).where(eq(personalSanctions.id, id));
+    return sanction || undefined;
+  }
+
+  async createPersonalSanction(insertSanction: InsertPersonalSanction): Promise<PersonalSanction> {
+    const numeroCarga = await this.getNextPersonalNumber();
+    const [sanction] = await db
+      .insert(personalSanctions)
+      .values({
+        ...insertSanction,
+        numeroCarga,
+        reportadaEnPdf: false,
+      })
+      .returning();
+    return sanction;
+  }
+
+  async updatePersonalSanction(id: string, updateData: Partial<InsertPersonalSanction>): Promise<PersonalSanction | undefined> {
+    const [sanction] = await db
+      .update(personalSanctions)
+      .set(updateData)
+      .where(eq(personalSanctions.id, id))
+      .returning();
+    return sanction || undefined;
+  }
+
+  async deletePersonalSanction(id: string): Promise<boolean> {
+    const result = await db.delete(personalSanctions).where(eq(personalSanctions.id, id));
+    return result.rowCount !== null && result.rowCount > 0;
+  }
+
+  // Report methods
+  async getExpiredUnreportedPersonalSanctions(): Promise<PersonalSanction[]> {
+    const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+    return await db
+      .select()
+      .from(personalSanctions)
+      .where(
+        and(
+          lt(personalSanctions.fechaFin, today),
+          eq(personalSanctions.reportadaEnPdf, false)
+        )
+      )
+      .orderBy(personalSanctions.fechaCreacion);
+  }
+
+  async markPersonalSanctionsAsReported(sanctionIds: string[]): Promise<void> {
+    if (sanctionIds.length === 0) return;
+    
+    // Update all sanctions in the array to mark them as reported
+    for (const id of sanctionIds) {
+      await db
+        .update(personalSanctions)
+        .set({ reportadaEnPdf: true })
+        .where(eq(personalSanctions.id, id));
+    }
+  }
+}
+
+// Use DatabaseStorage instead of MemStorage
+export const storage = new DatabaseStorage();
