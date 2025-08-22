@@ -61,7 +61,8 @@
   }
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    @apply bg-gradient-to-br from-blue-900 via-blue-700 to-indigo-800 text-white antialiased;
+    background-color: #f8f9fa;
+    color: #333;
     min-height: 100vh;
   }
 }

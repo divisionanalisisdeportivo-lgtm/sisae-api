@@ -22,43 +22,43 @@ export default function DashboardCards() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <div className="glassmorphism-card p-6 hover:bg-white/15 transition-all duration-300 shadow-lg" data-testid="card-club-sanctions">
+      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-300" data-testid="card-club-sanctions">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-blue-100 text-sm">Total Sanciones Clubes</p>
-            <p className="text-3xl font-bold text-white" data-testid="count-club-sanctions">{clubSanctions.length}</p>
+            <p className="text-gray-600 text-sm font-medium">Total Sanciones Clubes</p>
+            <p className="text-3xl font-bold text-gray-800" data-testid="count-club-sanctions">{clubSanctions.length}</p>
           </div>
-          <i className="fas fa-users text-blue-300 text-2xl"></i>
+          <i className="fas fa-users text-blue-500 text-2xl"></i>
         </div>
       </div>
       
-      <div className="glassmorphism-card p-6 hover:bg-white/15 transition-all duration-300 shadow-lg" data-testid="card-personal-sanctions">
+      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-300" data-testid="card-personal-sanctions">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-blue-100 text-sm">Sanciones Personales</p>
-            <p className="text-3xl font-bold text-white" data-testid="count-personal-sanctions">{personalSanctions.length}</p>
+            <p className="text-gray-600 text-sm font-medium">Sanciones Personales</p>
+            <p className="text-3xl font-bold text-gray-800" data-testid="count-personal-sanctions">{personalSanctions.length}</p>
           </div>
-          <i className="fas fa-user text-blue-300 text-2xl"></i>
+          <i className="fas fa-user text-orange-500 text-2xl"></i>
         </div>
       </div>
       
-      <div className="glassmorphism-card p-6 hover:bg-white/15 transition-all duration-300 shadow-lg" data-testid="card-active-sanctions">
+      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-300" data-testid="card-active-sanctions">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-blue-100 text-sm">Activas</p>
-            <p className="text-3xl font-bold text-green-400" data-testid="count-active-sanctions">{activeSanctions.length}</p>
+            <p className="text-gray-600 text-sm font-medium">Activas</p>
+            <p className="text-3xl font-bold text-red-600" data-testid="count-active-sanctions">{activeSanctions.length}</p>
           </div>
-          <i className="fas fa-exclamation-triangle text-green-400 text-2xl"></i>
+          <i className="fas fa-exclamation-triangle text-red-500 text-2xl"></i>
         </div>
       </div>
       
-      <div className="glassmorphism-card p-6 hover:bg-white/15 transition-all duration-300 shadow-lg" data-testid="card-expired-sanctions">
+      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-300" data-testid="card-expired-sanctions">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-blue-100 text-sm">Vencidas</p>
-            <p className="text-3xl font-bold text-gray-400" data-testid="count-expired-sanctions">{expiredSanctions.length}</p>
+            <p className="text-gray-600 text-sm font-medium">Vencidas</p>
+            <p className="text-3xl font-bold text-green-600" data-testid="count-expired-sanctions">{expiredSanctions.length}</p>
           </div>
-          <i className="fas fa-check-circle text-gray-400 text-2xl"></i>
+          <i className="fas fa-check-circle text-green-500 text-2xl"></i>
         </div>
       </div>
     </div>

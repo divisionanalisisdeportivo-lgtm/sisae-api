@@ -74,9 +74,9 @@ export default function ClubSanctionModal({ isOpen, onClose }: ClubSanctionModal
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto glassmorphism-card border-white/30">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-white">
+          <DialogTitle className="text-2xl font-bold text-gray-800">
             Nueva Sanción Club
           </DialogTitle>
         </DialogHeader>
@@ -84,12 +84,12 @@ export default function ClubSanctionModal({ isOpen, onClose }: ClubSanctionModal
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="nombreSancionado" className="text-blue-100">Nombre del Sancionado *</Label>
+              <Label htmlFor="nombreSancionado" className="text-gray-700">Nombre del Sancionado *</Label>
               <Input
                 id="nombreSancionado"
                 {...form.register("nombreSancionado")}
                 placeholder="Nombre del club"
-                className="glassmorphism-input text-gray-800 focus:outline-none transition-all"
+                className="border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 data-testid="input-club-name"
               />
               {form.formState.errors.nombreSancionado && (

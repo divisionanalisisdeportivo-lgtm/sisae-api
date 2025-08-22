@@ -20,12 +20,12 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="glassmorphism sticky top-0 z-50 border-b border-white/20">
+    <header className="bg-blue-600 shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 rounded-full border-2 border-white/30 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg">
-              <i className="fas fa-gavel text-white text-xl" data-testid="logo-icon"></i>
+            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-lg">
+              <i className="fas fa-gavel text-blue-600 text-xl" data-testid="logo-icon"></i>
             </div>
             <div>
               <h1 className="text-2xl font-bold text-white" data-testid="title-main">SISAE</h1>
@@ -35,19 +35,17 @@ export default function Header() {
           
           <div 
             id="status"
-            className={`hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-full backdrop-blur-sm border ${
+            className={`hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-lg ${
               isOnline 
-                ? 'bg-green-500/20 border-green-400/30' 
-                : 'bg-red-500/20 border-red-400/30'
+                ? 'bg-green-100 text-green-800 border border-green-200' 
+                : 'bg-red-100 text-red-800 border border-red-200'
             }`}
             data-testid="status-indicator"
           >
             <div className={`w-2 h-2 rounded-full animate-pulse ${
-              isOnline ? 'bg-green-400' : 'bg-red-400'
+              isOnline ? 'bg-green-500' : 'bg-red-500'
             }`}></div>
-            <span className={`text-sm font-medium ${
-              isOnline ? 'text-green-100' : 'text-red-100'
-            }`}>
+            <span className="text-sm font-medium">
               {isOnline ? 'Conectado' : 'Sin conexión'}
             </span>
           </div>

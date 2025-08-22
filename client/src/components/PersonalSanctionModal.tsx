@@ -71,9 +71,9 @@ export default function PersonalSanctionModal({ isOpen, onClose }: PersonalSanct
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto glassmorphism-card border-white/30">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-white">
+          <DialogTitle className="text-2xl font-bold text-gray-800">
             Nueva Sanción Personal - Tribuna Segura
           </DialogTitle>
         </DialogHeader>
@@ -81,12 +81,12 @@ export default function PersonalSanctionModal({ isOpen, onClose }: PersonalSanct
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="nombrePersona" className="text-blue-100">Nombre y Apellido *</Label>
+              <Label htmlFor="nombrePersona" className="text-gray-700">Nombre y Apellido *</Label>
               <Input
                 id="nombrePersona"
                 {...form.register("nombrePersona")}
                 placeholder="Nombre completo"
-                className="glassmorphism-input text-gray-800 focus:outline-none transition-all"
+                className="border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 data-testid="input-person-name"
               />
               {form.formState.errors.nombrePersona && (

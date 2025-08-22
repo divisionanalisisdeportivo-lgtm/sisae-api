@@ -111,23 +111,23 @@ export default function SanctionsList({ filters }: SanctionsListProps) {
 
   if (clubLoading || personalLoading) {
     return (
-      <div className="glassmorphism-card p-6 shadow-lg">
+      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
         <div className="text-center py-8">
-          <i className="fas fa-spinner fa-spin text-4xl text-blue-300 mb-4"></i>
-          <p className="text-blue-100">Cargando sanciones...</p>
+          <i className="fas fa-spinner fa-spin text-4xl text-blue-500 mb-4"></i>
+          <p className="text-gray-600">Cargando sanciones...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="glassmorphism-card p-6 shadow-lg">
+    <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-bold text-white">
-          <i className="fas fa-list mr-2"></i>Todas las Sanciones
+        <h3 className="text-xl font-bold text-gray-800">
+          <i className="fas fa-list mr-2 text-blue-600"></i>Todas las Sanciones
         </h3>
         <div className="flex items-center gap-4">
-          <span className="text-blue-100 font-medium" data-testid="results-count">
+          <span className="text-gray-600 font-medium" data-testid="results-count">
             {filteredSanctions.length} resultado{filteredSanctions.length !== 1 ? 's' : ''}
           </span>
           <button 
@@ -135,7 +135,7 @@ export default function SanctionsList({ filters }: SanctionsListProps) {
               queryClient.invalidateQueries({ queryKey: ["/api/club-sanctions"] });
               queryClient.invalidateQueries({ queryKey: ["/api/personal-sanctions"] });
             }}
-            className="text-blue-300 hover:text-blue-100 transition-colors"
+            className="text-blue-500 hover:text-blue-700 transition-colors"
             data-testid="button-refresh"
           >
             <i className="fas fa-sync-alt"></i>
@@ -144,7 +144,7 @@ export default function SanctionsList({ filters }: SanctionsListProps) {
       </div>
       
       {filteredSanctions.length === 0 ? (
-        <div className="bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-white/20 text-center">
+        <div className="bg-gray-50 rounded-lg p-8 text-center border border-gray-200">
           <div className="text-gray-500">
             <i className="fas fa-clipboard-list text-5xl mb-4"></i>
             <p className="text-xl font-medium mb-2">No hay sanciones que mostrar</p>
@@ -156,7 +156,7 @@ export default function SanctionsList({ filters }: SanctionsListProps) {
           {filteredSanctions.map((sanction) => (
             <div 
               key={`${sanction.type}-${sanction.id}`}
-              className="bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/20 hover:shadow-xl transition-all duration-300"
+              className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-md transition-shadow duration-300"
               data-testid={`sanction-card-${sanction.id}`}
             >
               <div className="flex justify-between items-start">
