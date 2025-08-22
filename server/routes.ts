@@ -4,10 +4,14 @@ import { storage } from "./storage";
 import { insertClubSanctionSchema, insertPersonalSanctionSchema } from "@shared/schema";
 import { z } from "zod";
 import { ObjectStorageService } from "./objectStorage";
+import { setupAuth, requireAuth } from "./auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Setup authentication
+  setupAuth(app);
+  
   // Club sanctions routes
-  app.get("/api/club-sanctions", async (req, res) => {
+  app.get("/api/club-sanctions", requireAuth, async (req, res) => {
     try {
       const sanctions = await storage.getClubSanctions();
       res.json(sanctions);
@@ -16,7 +20,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/club-sanctions/:id", async (req, res) => {
+  app.get("/api/club-sanctions/:id", requireAuth, async (req, res) => {
     try {
       const sanction = await storage.getClubSanction(req.params.id);
       if (!sanction) {
@@ -28,7 +32,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/club-sanctions", async (req, res) => {
+  app.post("/api/club-sanctions", requireAuth, async (req, res) => {
     try {
       const validatedData = insertClubSanctionSchema.parse(req.body);
       const sanction = await storage.createClubSanction(validatedData);
@@ -41,7 +45,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/club-sanctions/:id", async (req, res) => {
+  app.put("/api/club-sanctions/:id", requireAuth, async (req, res) => {
     try {
       const validatedData = insertClubSanctionSchema.partial().parse(req.body);
       const sanction = await storage.updateClubSanction(req.params.id, validatedData);
@@ -57,7 +61,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/club-sanctions/:id", async (req, res) => {
+  app.delete("/api/club-sanctions/:id", requireAuth, async (req, res) => {
     try {
       const deleted = await storage.deleteClubSanction(req.params.id);
       if (!deleted) {
@@ -70,7 +74,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Personal sanctions routes
-  app.get("/api/personal-sanctions", async (req, res) => {
+  app.get("/api/personal-sanctions", requireAuth, async (req, res) => {
     try {
       const sanctions = await storage.getPersonalSanctions();
       res.json(sanctions);
@@ -79,7 +83,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/personal-sanctions/:id", async (req, res) => {
+  app.get("/api/personal-sanctions/:id", requireAuth, async (req, res) => {
     try {
       const sanction = await storage.getPersonalSanction(req.params.id);
       if (!sanction) {
@@ -91,7 +95,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/personal-sanctions", async (req, res) => {
+  app.post("/api/personal-sanctions", requireAuth, async (req, res) => {
     try {
       const validatedData = insertPersonalSanctionSchema.parse(req.body);
       const sanction = await storage.createPersonalSanction(validatedData);
@@ -104,7 +108,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/personal-sanctions/:id", async (req, res) => {
+  app.put("/api/personal-sanctions/:id", requireAuth, async (req, res) => {
     try {
       const validatedData = insertPersonalSanctionSchema.partial().parse(req.body);
       const sanction = await storage.updatePersonalSanction(req.params.id, validatedData);
@@ -120,7 +124,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/personal-sanctions/:id", async (req, res) => {
+  app.delete("/api/personal-sanctions/:id", requireAuth, async (req, res) => {
     try {
       const deleted = await storage.deletePersonalSanction(req.params.id);
       if (!deleted) {
@@ -133,7 +137,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Monthly PDF report for expired unreported personal sanctions
-  app.get("/api/tribuna-segura-report", async (req, res) => {
+  app.get("/api/tribuna-segura-report", requireAuth, async (req, res) => {
     try {
       const expiredUnreportedSanctions = await storage.getExpiredUnreportedPersonalSanctions();
       const reportData = {
@@ -151,7 +155,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Mark sanctions as reported after PDF generation
-  app.post("/api/mark-reported", async (req, res) => {
+  app.post("/api/mark-reported", requireAuth, async (req, res) => {
     try {
       const { sanctionIds } = req.body;
       if (!Array.isArray(sanctionIds)) {
@@ -167,7 +171,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Object storage routes for PDF uploads
-  app.post("/api/objects/upload", async (req, res) => {
+  app.post("/api/objects/upload", requireAuth, async (req, res) => {
     try {
       const objectStorageService = new ObjectStorageService();
       const uploadURL = await objectStorageService.getUploadURL();
@@ -178,7 +182,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/objects/:objectPath(*)", async (req, res) => {
+  app.get("/objects/:objectPath(*)", requireAuth, async (req, res) => {
     try {
       const objectStorageService = new ObjectStorageService();
       const objectFile = await objectStorageService.getObjectFile(req.path);

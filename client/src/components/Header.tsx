@@ -1,15 +1,25 @@
 import { useState, useEffect } from "react";
 import sisaeIcon from "@assets/sisae-icon.png_1755871496091.png";
+import { useAuth } from "@/hooks/use-auth";
+import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { User, LogOut, Shield, Settings } from "lucide-react";
 
 export default function Header() {
+  const { user, logoutMutation } = useAuth();
   const [isOnline, setIsOnline] = useState(true);
 
   useEffect(() => {
-    // Simulate connection monitoring
+    // Connection monitoring
     const checkConnection = async () => {
       try {
-        const response = await fetch('/api/club-sanctions');
-        setIsOnline(response.ok);
+        // Only check connection if user is authenticated
+        if (user) {
+          const response = await fetch('/api/user', { credentials: 'include' });
+          setIsOnline(response.ok);
+        } else {
+          setIsOnline(false);
+        }
       } catch {
         setIsOnline(false);
       }
@@ -18,7 +28,7 @@ export default function Header() {
     checkConnection();
     const interval = setInterval(checkConnection, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [user]);
 
   return (
     <header className="sisae-gradient-bg shadow-xl sticky top-0 z-50 border-b border-gray-800">
@@ -44,23 +54,79 @@ export default function Header() {
             </div>
           </div>
           
-          <div className="hidden md:flex items-center">
-            <div 
-              id="status"
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg border-2 backdrop-blur-sm ${
-                isOnline 
-                  ? 'bg-green-900/20 text-green-300 border-green-400/30' 
-                  : 'bg-red-900/20 text-red-300 border-red-400/30'
-              }`}
-              data-testid="status-indicator"
-            >
-              <div className={`w-3 h-3 rounded-full ${
-                isOnline ? 'bg-green-400 shadow-lg shadow-green-400/50' : 'bg-red-400 shadow-lg shadow-red-400/50'
-              } animate-pulse`}></div>
-              <span className="text-sm font-semibold">
-                {isOnline ? 'Sistema Activo' : 'Sin Conexión'}
-              </span>
+          <div className="flex items-center space-x-4">
+            {/* Status Indicator */}
+            <div className="hidden md:flex">
+              <div 
+                id="status"
+                className={`flex items-center space-x-2 px-3 py-2 rounded-lg border-2 backdrop-blur-sm ${
+                  isOnline 
+                    ? 'bg-green-900/20 text-green-300 border-green-400/30' 
+                    : 'bg-red-900/20 text-red-300 border-red-400/30'
+                }`}
+                data-testid="status-indicator"
+              >
+                <div className={`w-2 h-2 rounded-full ${
+                  isOnline ? 'bg-green-400 shadow-lg shadow-green-400/50' : 'bg-red-400 shadow-lg shadow-red-400/50'
+                } animate-pulse`}></div>
+                <span className="text-xs font-medium">
+                  {isOnline ? 'Activo' : 'Desconectado'}
+                </span>
+              </div>
             </div>
+
+            {/* User Menu */}
+            {user && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 text-white border border-white/20"
+                    data-testid="user-menu-trigger"
+                  >
+                    <div className="flex items-center space-x-2">
+                      {user.role === 'admin' ? (
+                        <Shield className="h-4 w-4 text-blue-300" />
+                      ) : (
+                        <User className="h-4 w-4 text-gray-300" />
+                      )}
+                      <div className="text-left hidden sm:block">
+                        <p className="text-sm font-medium">{user.username}</p>
+                        <p className="text-xs text-gray-300">
+                          {user.role === 'admin' ? 'Administrador' : 'Usuario'}
+                        </p>
+                      </div>
+                    </div>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="px-2 py-1.5">
+                    <p className="text-sm font-medium" data-testid="user-menu-username">{user.username}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {user.role === 'admin' ? 'Administrador del sistema' : 'Usuario del sistema'}
+                    </p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  {user.role === 'admin' && (
+                    <>
+                      <DropdownMenuItem className="cursor-pointer">
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Configuración</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
+                  )}
+                  <DropdownMenuItem 
+                    className="cursor-pointer text-red-600 focus:text-red-600" 
+                    onClick={() => logoutMutation.mutate()}
+                    data-testid="button-logout"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Cerrar Sesión</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
         </div>
       </div>

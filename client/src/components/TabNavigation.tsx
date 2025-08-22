@@ -1,14 +1,20 @@
 interface TabNavigationProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
+  userRole?: string;
 }
 
-export default function TabNavigation({ activeTab, onTabChange }: TabNavigationProps) {
-  const tabs = [
+export default function TabNavigation({ activeTab, onTabChange, userRole }: TabNavigationProps) {
+  const baseTabs = [
     { id: 'clubes', label: 'Clubes', icon: 'fas fa-users' },
     { id: 'tribuna', label: 'Tribuna Segura', icon: 'fas fa-user-shield' },
     { id: 'estadisticas', label: 'Estadísticas', icon: 'fas fa-chart-bar' }
   ];
+  
+  // Add admin tab if user is admin
+  const tabs = userRole === 'admin' 
+    ? [...baseTabs, { id: 'administrar', label: 'Administrar', icon: 'fas fa-cog' }]
+    : baseTabs;
 
   return (
     <nav className="bg-white border-b border-slate-200 shadow-sm">
@@ -38,6 +44,7 @@ export default function TabNavigation({ activeTab, onTabChange }: TabNavigationP
                   {tab.id === 'clubes' && 'Gestión de clubes'}
                   {tab.id === 'tribuna' && 'Sanciones personales'}
                   {tab.id === 'estadisticas' && 'Reportes y análisis'}
+                  {tab.id === 'administrar' && 'Usuarios y permisos'}
                 </span>
               </div>
             </button>

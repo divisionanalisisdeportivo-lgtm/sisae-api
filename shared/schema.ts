@@ -3,6 +3,20 @@ import { pgTable, text, varchar, integer, timestamp, boolean } from "drizzle-orm
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+// Users table for authentication and authorization
+export const users = pgTable("users", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  username: text("username").notNull().unique(),
+  password: text("password").notNull(),
+  role: text("role").notNull().default("user"), // 'admin' or 'user'
+  isActive: boolean("is_active").default(true).notNull(),
+  temporaryAccess: boolean("temporary_access").default(false).notNull(),
+  accessExpires: timestamp("access_expires"),
+  lastLogin: timestamp("last_login"),
+  createdAt: timestamp("created_at").defaultNow(),
+  createdBy: varchar("created_by"),
+});
+
 export const clubSanctions = pgTable("club_sanctions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   numeroCarga: integer("numero_carga").notNull(),
@@ -47,6 +61,17 @@ export const insertPersonalSanctionSchema = createInsertSchema(personalSanctions
   reportadaEnPdf: true,
   fechaCreacion: true,
 });
+
+// User schemas
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+  createdAt: true,
+}).extend({
+  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+});
+
+export type InsertUser = z.infer<typeof insertUserSchema>;
+export type User = typeof users.$inferSelect;
 
 export type InsertClubSanction = z.infer<typeof insertClubSanctionSchema>;
 export type InsertPersonalSanction = z.infer<typeof insertPersonalSanctionSchema>;

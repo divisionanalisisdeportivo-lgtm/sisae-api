@@ -1,7 +1,12 @@
-import { type ClubSanction, type PersonalSanction, type InsertClubSanction, type InsertPersonalSanction, clubSanctions, personalSanctions } from "@shared/schema";
+import { type ClubSanction, type PersonalSanction, type InsertClubSanction, type InsertPersonalSanction, type User, type InsertUser, clubSanctions, personalSanctions, users } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, lt, max } from "drizzle-orm";
 import { randomUUID } from "crypto";
+import session from "express-session";
+import connectPg from "connect-pg-simple";
+import { pool } from "./db";
+
+const PostgresSessionStore = connectPg(session);
 
 export interface IStorage {
   // Club sanctions
@@ -21,155 +26,26 @@ export interface IStorage {
   // Report methods
   getExpiredUnreportedPersonalSanctions(): Promise<PersonalSanction[]>;
   markPersonalSanctionsAsReported(sanctionIds: string[]): Promise<void>;
+  
+  // User management
+  getUser(id: string): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
+  updateUser(id: string, user: Partial<InsertUser>): Promise<User | undefined>;
+  deleteUser(id: string): Promise<boolean>;
+  getAllUsers(): Promise<User[]>;
+  
+  // Session store
+  sessionStore: session.Store;
 }
 
-export class MemStorage implements IStorage {
-  private clubSanctions: Map<string, ClubSanction>;
-  private personalSanctions: Map<string, PersonalSanction>;
-  private clubAvailableNumbers: number[];
-  private personalAvailableNumbers: number[];
-  private clubNextNumber: number;
-  private personalNextNumber: number;
-
-  constructor() {
-    this.clubSanctions = new Map();
-    this.personalSanctions = new Map();
-    this.clubAvailableNumbers = [];
-    this.personalAvailableNumbers = [];
-    this.clubNextNumber = 1;
-    this.personalNextNumber = 1;
-  }
-
-  private getNextClubNumber(): number {
-    if (this.clubAvailableNumbers.length > 0) {
-      return this.clubAvailableNumbers.shift()!;
-    }
-    return this.clubNextNumber++;
-  }
-
-  private getNextPersonalNumber(): number {
-    if (this.personalAvailableNumbers.length > 0) {
-      return this.personalAvailableNumbers.shift()!;
-    }
-    return this.personalNextNumber++;
-  }
-
-  private returnClubNumber(number: number): void {
-    this.clubAvailableNumbers.push(number);
-    this.clubAvailableNumbers.sort((a, b) => a - b);
-  }
-
-  private returnPersonalNumber(number: number): void {
-    this.personalAvailableNumbers.push(number);
-    this.personalAvailableNumbers.sort((a, b) => a - b);
-  }
-
-  // Club sanctions methods
-  async getClubSanctions(): Promise<ClubSanction[]> {
-    return Array.from(this.clubSanctions.values());
-  }
-
-  async getClubSanction(id: string): Promise<ClubSanction | undefined> {
-    return this.clubSanctions.get(id);
-  }
-
-  async createClubSanction(insertSanction: InsertClubSanction): Promise<ClubSanction> {
-    const id = randomUUID();
-    const numeroCarga = this.getNextClubNumber();
-    const sanction: ClubSanction = {
-      ...insertSanction,
-      id,
-      numeroCarga,
-      fechaCreacion: new Date(),
-      observaciones: insertSanction.observaciones || null,
-      actaPdf: insertSanction.actaPdf || null,
-    };
-    this.clubSanctions.set(id, sanction);
-    return sanction;
-  }
-
-  async updateClubSanction(id: string, updateData: Partial<InsertClubSanction>): Promise<ClubSanction | undefined> {
-    const existing = this.clubSanctions.get(id);
-    if (!existing) return undefined;
-    
-    const updated: ClubSanction = { ...existing, ...updateData };
-    this.clubSanctions.set(id, updated);
-    return updated;
-  }
-
-  async deleteClubSanction(id: string): Promise<boolean> {
-    const sanction = this.clubSanctions.get(id);
-    if (sanction) {
-      this.returnClubNumber(sanction.numeroCarga);
-      return this.clubSanctions.delete(id);
-    }
-    return false;
-  }
-
-  // Personal sanctions methods
-  async getPersonalSanctions(): Promise<PersonalSanction[]> {
-    return Array.from(this.personalSanctions.values());
-  }
-
-  async getPersonalSanction(id: string): Promise<PersonalSanction | undefined> {
-    return this.personalSanctions.get(id);
-  }
-
-  async createPersonalSanction(insertSanction: InsertPersonalSanction): Promise<PersonalSanction> {
-    const id = randomUUID();
-    const numeroCarga = this.getNextPersonalNumber();
-    const sanction: PersonalSanction = {
-      ...insertSanction,
-      id,
-      numeroCarga,
-      reportadaEnPdf: false,
-      fechaCreacion: new Date(),
-      observaciones: insertSanction.observaciones || null,
-      actaPdf: insertSanction.actaPdf || null,
-    };
-    this.personalSanctions.set(id, sanction);
-    return sanction;
-  }
-
-  async updatePersonalSanction(id: string, updateData: Partial<InsertPersonalSanction>): Promise<PersonalSanction | undefined> {
-    const existing = this.personalSanctions.get(id);
-    if (!existing) return undefined;
-    
-    const updated: PersonalSanction = { ...existing, ...updateData };
-    this.personalSanctions.set(id, updated);
-    return updated;
-  }
-
-  async deletePersonalSanction(id: string): Promise<boolean> {
-    const sanction = this.personalSanctions.get(id);
-    if (sanction) {
-      this.returnPersonalNumber(sanction.numeroCarga);
-      return this.personalSanctions.delete(id);
-    }
-    return false;
-  }
-
-  // Report methods
-  async getExpiredUnreportedPersonalSanctions(): Promise<PersonalSanction[]> {
-    const today = new Date();
-    return Array.from(this.personalSanctions.values()).filter(sanction => {
-      const endDate = new Date(sanction.fechaFin);
-      return endDate < today && !sanction.reportadaEnPdf;
-    });
-  }
-
-  async markPersonalSanctionsAsReported(sanctionIds: string[]): Promise<void> {
-    for (const id of sanctionIds) {
-      const sanction = this.personalSanctions.get(id);
-      if (sanction) {
-        const updated: PersonalSanction = { ...sanction, reportadaEnPdf: true };
-        this.personalSanctions.set(id, updated);
-      }
-    }
-  }
-}
 
 export class DatabaseStorage implements IStorage {
+  sessionStore: session.Store;
+
+  constructor() {
+    this.sessionStore = new PostgresSessionStore({ pool, createTableIfMissing: true });
+  }
   // Helper methods for getting next available numbers
   private async getNextClubNumber(): Promise<number> {
     const result = await db.select({ maxNumber: max(clubSanctions.numeroCarga) })
@@ -281,6 +157,46 @@ export class DatabaseStorage implements IStorage {
         .set({ reportadaEnPdf: true })
         .where(eq(personalSanctions.id, id));
     }
+  }
+
+  // User management methods
+  async getUser(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async updateUser(id: string, updateData: Partial<InsertUser>): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set({
+        ...updateData,
+        lastLogin: updateData.lastLogin ? new Date() : undefined
+      })
+      .where(eq(users.id, id))
+      .returning();
+    return user || undefined;
+  }
+
+  async deleteUser(id: string): Promise<boolean> {
+    const result = await db.delete(users).where(eq(users.id, id));
+    return result.rowCount !== null && result.rowCount > 0;
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return await db.select().from(users).orderBy(users.createdAt);
   }
 }
 
