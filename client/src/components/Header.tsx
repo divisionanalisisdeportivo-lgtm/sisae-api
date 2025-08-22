@@ -34,12 +34,7 @@ export default function Header() {
             </div>
           </div>
           
-          <div className="hidden md:flex items-center space-x-6">
-            <div className="text-right text-slate-300">
-              <p className="text-sm font-medium">Ministerio de Deportes</p>
-              <p className="text-xs text-slate-400">Gobierno de Córdoba</p>
-            </div>
-            
+          <div className="hidden md:flex items-center">
             <div 
               id="status"
               className={`flex items-center space-x-2 px-4 py-2 rounded-md border ${
