@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell, LineChart, Line, AreaChart, Area, ResponsiveContainer } from 'recharts';
 import type { ClubSanction, PersonalSanction } from "@shared/schema";
 
 function isActive(sanction: ClubSanction | PersonalSanction): boolean {
@@ -104,6 +105,35 @@ export default function EstadisticasTab() {
     .sort(([,a], [,b]) => b.total - a.total)
     .slice(0, 10); // Top 10 sports
 
+  // Data for charts
+  const sportsChartData = sortedSports.map(([sport, stats]) => ({
+    deporte: sport,
+    clubes: clubSanctions.filter(s => s.deporte === sport).length,
+    personales: personalSanctions.filter(s => s.deporte === sport).length,
+    activas: stats.active,
+    vencidas: stats.expired,
+    total: stats.total
+  }));
+
+  const pieChartData = [
+    { name: 'Sanciones de Clubes', value: clubSanctions.length, color: '#3B82F6' },
+    { name: 'Sanciones Personales', value: personalSanctions.length, color: '#F59E0B' }
+  ];
+
+  const statusChartData = [
+    { name: 'Activas', value: activeSanctions.length, color: '#EF4444' },
+    { name: 'Vencidas', value: expiredSanctions.length, color: '#10B981' }
+  ];
+
+  const COLORS = {
+    blue: '#3B82F6',
+    orange: '#F59E0B',
+    red: '#EF4444',
+    green: '#10B981',
+    purple: '#8B5CF6',
+    yellow: '#F59E0B'
+  };
+
   return (
     <div className="space-y-6">
       {/* Main Statistics Cards */}
@@ -196,10 +226,118 @@ export default function EstadisticasTab() {
         </div>
       </div>
 
-      {/* Top Sports */}
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Sports Bar Chart */}
+        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+          <h3 className="text-xl font-bold text-gray-800 mb-6">
+            <i className="fas fa-chart-bar mr-2 text-blue-600"></i>Sanciones por Deporte
+          </h3>
+          {sportsChartData.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              <i className="fas fa-chart-bar text-4xl mb-4"></i>
+              <p>No hay datos disponibles</p>
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={sportsChartData.slice(0, 6)}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="deporte" angle={-45} textAnchor="end" height={80} />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="clubes" fill={COLORS.blue} name="Clubes" />
+                <Bar dataKey="personales" fill={COLORS.orange} name="Personales" />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+
+        {/* Type Distribution Pie Chart */}
+        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+          <h3 className="text-xl font-bold text-gray-800 mb-6">
+            <i className="fas fa-chart-pie mr-2 text-green-600"></i>Distribución por Tipo
+          </h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={pieChartData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({ name, value, percent }) => `${name}: ${value} (${(percent * 100).toFixed(0)}%)`}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {pieChartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Status and Activity Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Status Distribution */}
+        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+          <h3 className="text-xl font-bold text-gray-800 mb-6">
+            <i className="fas fa-chart-donut mr-2 text-red-600"></i>Estado de Sanciones
+          </h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={statusChartData}
+                cx="50%"
+                cy="50%"
+                innerRadius={40}
+                outerRadius={80}
+                paddingAngle={5}
+                dataKey="value"
+              >
+                {statusChartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Active vs Expired by Sport */}
+        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+          <h3 className="text-xl font-bold text-gray-800 mb-6">
+            <i className="fas fa-chart-area mr-2 text-purple-600"></i>Activas vs Vencidas por Deporte
+          </h3>
+          {sportsChartData.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              <i className="fas fa-chart-area text-4xl mb-4"></i>
+              <p>No hay datos disponibles</p>
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart data={sportsChartData.slice(0, 5)}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="deporte" angle={-45} textAnchor="end" height={80} />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Area type="monotone" dataKey="activas" stackId="1" stroke={COLORS.red} fill={COLORS.red} fillOpacity={0.6} name="Activas" />
+                <Area type="monotone" dataKey="vencidas" stackId="1" stroke={COLORS.green} fill={COLORS.green} fillOpacity={0.6} name="Vencidas" />
+              </AreaChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+      </div>
+
+      {/* Top Sports Table */}
       <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
         <h3 className="text-xl font-bold text-gray-800 mb-6">
-          <i className="fas fa-trophy mr-2 text-yellow-600"></i>Deportes con Más Sanciones
+          <i className="fas fa-trophy mr-2 text-yellow-600"></i>Ranking de Deportes
         </h3>
         <div className="space-y-4">
           {sortedSports.length === 0 ? (
@@ -208,22 +346,42 @@ export default function EstadisticasTab() {
               <p>No hay datos de deportes disponibles</p>
             </div>
           ) : (
-            sortedSports.map(([sport, stats], index) => (
-              <div key={sport} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
-                <div className="flex items-center space-x-4">
-                  <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
-                    {index + 1}
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-gray-800">{sport}</h4>
-                    <p className="text-sm text-gray-600">
-                      {stats.active} activas, {stats.expired} vencidas
-                    </p>
-                  </div>
-                </div>
-                <span className="text-2xl font-bold text-gray-800">{stats.total}</span>
-              </div>
-            ))
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ranking</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deporte</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Clubes</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Personales</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Activas</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vencidas</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {sortedSports.map(([sport, stats], index) => (
+                    <tr key={sport} className="hover:bg-gray-50">
+                      <td className="px-4 py-4 whitespace-nowrap">
+                        <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-xs">
+                          {index + 1}
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap font-medium text-gray-900">{sport}</td>
+                      <td className="px-4 py-4 whitespace-nowrap font-bold text-lg text-gray-900">{stats.total}</td>
+                      <td className="px-4 py-4 whitespace-nowrap text-blue-600 font-medium">
+                        {clubSanctions.filter(s => s.deporte === sport).length}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-orange-600 font-medium">
+                        {personalSanctions.filter(s => s.deporte === sport).length}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-red-600 font-medium">{stats.active}</td>
+                      <td className="px-4 py-4 whitespace-nowrap text-green-600 font-medium">{stats.expired}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>
