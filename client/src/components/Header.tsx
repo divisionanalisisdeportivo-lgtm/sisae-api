@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import sisaeIcon from "@assets/sisae-icon.png_1755871496091.png";
 
 export default function Header() {
   const [isOnline, setIsOnline] = useState(true);
@@ -26,7 +27,7 @@ export default function Header() {
           <div className="flex items-center space-x-5">
             <div className="w-16 h-16 rounded-xl sisae-icon-container flex items-center justify-center shadow-lg">
               <img 
-                src="/attached_assets/sisae-icon.png_1755871496091.png" 
+                src={sisaeIcon}
                 alt="SISAE" 
                 className="w-12 h-12 object-contain"
                 data-testid="logo-icon"
