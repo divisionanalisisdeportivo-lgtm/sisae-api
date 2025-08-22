@@ -132,6 +132,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Monthly PDF report for expired unreported personal sanctions
+  app.get("/api/tribuna-segura-report", async (req, res) => {
+    try {
+      const expiredUnreportedSanctions = await storage.getExpiredUnreportedPersonalSanctions();
+      const reportData = {
+        title: "Reporte Mensual de Tribuna Segura - Sanciones Cumplidas",
+        date: new Date().toLocaleDateString('es-AR'),
+        totalSanctions: expiredUnreportedSanctions.length,
+        sanctions: expiredUnreportedSanctions
+      };
+      
+      res.json(reportData);
+    } catch (error) {
+      console.error("Error generating report:", error);
+      res.status(500).json({ error: "Failed to generate report" });
+    }
+  });
+
+  // Mark sanctions as reported after PDF generation
+  app.post("/api/mark-reported", async (req, res) => {
+    try {
+      const { sanctionIds } = req.body;
+      if (!Array.isArray(sanctionIds)) {
+        return res.status(400).json({ error: "sanctionIds must be an array" });
+      }
+      
+      await storage.markPersonalSanctionsAsReported(sanctionIds);
+      res.json({ success: true, message: `Marked ${sanctionIds.length} sanctions as reported` });
+    } catch (error) {
+      console.error("Error marking sanctions as reported:", error);
+      res.status(500).json({ error: "Failed to mark sanctions as reported" });
+    }
+  });
+
   // Object storage routes for PDF uploads
   app.post("/api/objects/upload", async (req, res) => {
     try {

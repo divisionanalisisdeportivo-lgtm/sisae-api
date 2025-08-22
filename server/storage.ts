@@ -15,6 +15,10 @@ export interface IStorage {
   createPersonalSanction(sanction: InsertPersonalSanction): Promise<PersonalSanction>;
   updatePersonalSanction(id: string, sanction: Partial<InsertPersonalSanction>): Promise<PersonalSanction | undefined>;
   deletePersonalSanction(id: string): Promise<boolean>;
+  
+  // Report methods
+  getExpiredUnreportedPersonalSanctions(): Promise<PersonalSanction[]>;
+  markPersonalSanctionsAsReported(sanctionIds: string[]): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -116,6 +120,7 @@ export class MemStorage implements IStorage {
       ...insertSanction,
       id,
       numeroCarga,
+      reportadaEnPdf: false,
       fechaCreacion: new Date(),
       observaciones: insertSanction.observaciones || null,
       actaPdf: insertSanction.actaPdf || null,
@@ -140,6 +145,25 @@ export class MemStorage implements IStorage {
       return this.personalSanctions.delete(id);
     }
     return false;
+  }
+
+  // Report methods
+  async getExpiredUnreportedPersonalSanctions(): Promise<PersonalSanction[]> {
+    const today = new Date();
+    return Array.from(this.personalSanctions.values()).filter(sanction => {
+      const endDate = new Date(sanction.fechaFin);
+      return endDate < today && !sanction.reportadaEnPdf;
+    });
+  }
+
+  async markPersonalSanctionsAsReported(sanctionIds: string[]): Promise<void> {
+    for (const id of sanctionIds) {
+      const sanction = this.personalSanctions.get(id);
+      if (sanction) {
+        const updated: PersonalSanction = { ...sanction, reportadaEnPdf: true };
+        this.personalSanctions.set(id, updated);
+      }
+    }
   }
 }
 

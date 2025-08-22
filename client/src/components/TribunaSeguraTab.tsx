@@ -95,28 +95,58 @@ export default function TribunaSeguraTab({ filters, onFiltersChange }: TribunaSe
     setEditingSanction(null);
   };
 
-  const generateTribunaSeguraReport = () => {
-    // Simulated PDF generation for Tribuna Segura
-    const reportData = {
-      title: "Reporte de Tribuna Segura",
-      date: new Date().toLocaleDateString('es-AR'),
-      totalSanctions: personalSanctions.length,
-      activeSanctions: personalSanctions.filter(isActive).length,
-      expiredSanctions: personalSanctions.filter(s => !isActive(s)).length,
-      sanctions: filteredSanctions
-    };
-
-    // In a real implementation, you would use a PDF library like jsPDF
-    console.log("Generando reporte PDF de Tribuna Segura:", reportData);
-    
-    alert(`Reporte de Tribuna Segura generado exitosamente:
-    
-    - Total de sanciones: ${reportData.totalSanctions}
-    - Sanciones activas: ${reportData.activeSanctions} 
-    - Sanciones vencidas: ${reportData.expiredSanctions}
-    - Fecha: ${reportData.date}
-    
-    El archivo PDF se descargaría automáticamente.`);
+  const generateTribunaSeguraReport = async () => {
+    try {
+      // Fetch expired unreported sanctions for the monthly report
+      const response = await fetch('/api/tribuna-segura-report');
+      if (!response.ok) {
+        throw new Error('Error al obtener datos del reporte');
+      }
+      
+      const reportData = await response.json();
+      
+      if (reportData.totalSanctions === 0) {
+        alert('No hay sanciones vencidas pendientes de reporte para este mes.');
+        return;
+      }
+      
+      // In a real implementation, you would use a PDF library like jsPDF
+      console.log("Generando reporte PDF mensual de Tribuna Segura:", reportData);
+      
+      const confirmGenerate = confirm(`Reporte Mensual de Tribuna Segura:\\n\\n` +
+        `- Personas con sanciones cumplidas: ${reportData.totalSanctions}\\n\\n` +
+        `Una vez generado el reporte, estas personas no volverán a aparecer en futuros reportes mensuales.\\n\\n` +
+        `¿Desea generar el reporte PDF?`);
+      
+      if (confirmGenerate) {
+        // Mark sanctions as reported
+        const sanctionIds = reportData.sanctions.map((s: any) => s.id);
+        const markResponse = await fetch('/api/mark-reported', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sanctionIds })
+        });
+        
+        if (markResponse.ok) {
+          toast({
+            title: "Reporte generado exitosamente",
+            description: `Se reportaron ${reportData.totalSanctions} personas con sanciones cumplidas`,
+          });
+          
+          // Refresh the data to reflect the changes
+          queryClient.invalidateQueries({ queryKey: ["/api/personal-sanctions"] });
+        } else {
+          throw new Error('Error al marcar sanciones como reportadas');
+        }
+      }
+    } catch (error) {
+      console.error('Error generating report:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo generar el reporte mensual",
+        variant: "destructive",
+      });
+    }
   };
 
   if (isLoading) {
@@ -148,7 +178,7 @@ export default function TribunaSeguraTab({ filters, onFiltersChange }: TribunaSe
           data-testid="button-export-tribuna"
         >
           <i className="fas fa-file-pdf"></i>
-          <span>Generar Reporte PDF</span>
+          <span>Reporte Mensual PDF</span>
         </button>
       </div>
 
@@ -252,6 +282,12 @@ export default function TribunaSeguraTab({ filters, onFiltersChange }: TribunaSe
                       }`}>
                         {isActive(sanction) ? 'Activa' : 'Vencida'}
                       </span>
+                      {(sanction as any).reportadaEnPdf && (
+                        <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded border border-blue-200">
+                          <i className="fas fa-file-pdf mr-1"></i>
+                          Reportada
+                        </span>
+                      )}
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">

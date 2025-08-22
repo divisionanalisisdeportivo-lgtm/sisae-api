@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, integer, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, integer, timestamp, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -31,6 +31,7 @@ export const personalSanctions = pgTable("personal_sanctions", {
   fechaFin: text("fecha_fin").notNull(),
   observaciones: text("observaciones"),
   actaPdf: text("acta_pdf"),
+  reportadaEnPdf: boolean("reportada_en_pdf").default(false).notNull(),
   fechaCreacion: timestamp("fecha_creacion").defaultNow(),
 });
 
@@ -43,6 +44,7 @@ export const insertClubSanctionSchema = createInsertSchema(clubSanctions).omit({
 export const insertPersonalSanctionSchema = createInsertSchema(personalSanctions).omit({
   id: true,
   numeroCarga: true,
+  reportadaEnPdf: true,
   fechaCreacion: true,
 });
 
