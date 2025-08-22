@@ -1,0 +1,311 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISAE - Sistema de Sanciones Deportivas</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-900 via-blue-700 to-indigo-800">
+    
+    <!-- Header -->
+    <header class="bg-white/10 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <img src="sisae-icon.png" alt="SISAE" class="w-12 h-12 rounded-full border-2 border-white/30">
+                    <div>
+                        <h1 class="text-2xl font-bold text-white">SISAE</h1>
+                        <p class="text-blue-100 text-sm">Sistema Integral de Sanciones Deportivas</p>
+                    </div>
+                </div>
+                
+                <div id="status" class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-green-500/20 backdrop-blur-sm border border-green-400/30">
+                    <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span class="status-text text-green-100 text-sm font-medium">Conectado</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        
+        <!-- Dashboard Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-blue-100 text-sm">Total Sanciones Clubes</p>
+                        <p id="totalSanciones" class="text-3xl font-bold text-white">0</p>
+                    </div>
+                    <i class="fas fa-users text-blue-300 text-2xl"></i>
+                </div>
+            </div>
+            
+            <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-blue-100 text-sm">Sanciones Personales</p>
+                        <p id="totalPersonas" class="text-3xl font-bold text-white">0</p>
+                    </div>
+                    <i class="fas fa-user text-blue-300 text-2xl"></i>
+                </div>
+            </div>
+            
+            <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-blue-100 text-sm">Activas</p>
+                        <p id="totalActivas" class="text-3xl font-bold text-green-400">0</p>
+                    </div>
+                    <i class="fas fa-exclamation-triangle text-green-400 text-2xl"></i>
+                </div>
+            </div>
+            
+            <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-blue-100 text-sm">Vencidas</p>
+                        <p id="totalVencidas" class="text-3xl font-bold text-gray-400">0</p>
+                    </div>
+                    <i class="fas fa-check-circle text-gray-400 text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <button id="nuevaSancionBtn" class="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg">
+                <i class="fas fa-plus mr-2"></i>Nueva Sanción Club
+            </button>
+            
+            <button id="nuevaPersonaBtn" class="bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg">
+                <i class="fas fa-user-plus mr-2"></i>Nueva Sanción Personal
+            </button>
+            
+            <button id="exportarPdfBtn" class="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg">
+                <i class="fas fa-file-pdf mr-2"></i>Exportar PDF
+            </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 mb-8">
+            <h3 class="text-xl font-bold text-white mb-4">
+                <i class="fas fa-filter mr-2"></i>Filtros
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-blue-100 mb-2">Buscar</label>
+                    <input type="text" id="busqueda" placeholder="Nombre, deporte, ubicación..."
+                           class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-blue-100 mb-2">Deporte</label>
+                    <select id="filtroDeporte" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80">
+                        <option value="">Todos los deportes</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-blue-100 mb-2">Estado</label>
+                    <select id="filtroEstado" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80">
+                        <option value="">Todos</option>
+                        <option value="activa">Activas</option>
+                        <option value="vencida">Vencidas</option>
+                    </select>
+                </div>
+                
+                <div class="flex items-end">
+                    <button id="limpiarFiltrosBtn" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-lg transition-colors">
+                        <i class="fas fa-broom mr-2"></i>Limpiar
+                    </button>
+                </div>
+            </div>
+            
+            <div class="mt-4 text-center">
+                <span id="contadorResultados" class="text-blue-100 font-medium">0 resultados</span>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-white">
+                    <i class="fas fa-list mr-2"></i>Todas las Sanciones
+                </h3>
+                <button class="text-blue-300 hover:text-blue-100 transition-colors">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+            
+            <div id="todasSancionesList" class="space-y-4">
+                <!-- Los datos se cargarán aquí -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal para nueva sanción club -->
+    <div id="modalSancionClub" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Nueva Sanción Club</h2>
+                <button id="cerrarModalClub" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="formSancionClub">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Nombre del Sancionado *</label>
+                        <input type="text" name="nombreSancionado" required
+                               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Deporte *</label>
+                        <select name="deporte" required
+                                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80">
+                            <option value="">Seleccionar deporte</option>
+                            <option value="Fútbol">Fútbol</option>
+                            <option value="Básquetbol">Básquetbol</option>
+                            <option value="Voleibol">Voleibol</option>
+                            <option value="Rugby">Rugby</option>
+                            <option value="Hockey">Hockey</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Ubicación *</label>
+                        <select name="ubicacion" required
+                                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80">
+                            <option value="">Seleccionar ubicación</option>
+                            <option value="Capital">Capital</option>
+                            <option value="Interior">Interior</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Tipo de Sanción *</label>
+                        <select name="tipoSancion" required
+                                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80">
+                            <option value="">Seleccionar tipo</option>
+                            <option value="Suspensión">Suspensión</option>
+                            <option value="Multa">Multa</option>
+                            <option value="Amonestación">Amonestación</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Fecha Inicio *</label>
+                        <input type="date" name="fechaInicio" required
+                               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Fecha Fin *</label>
+                        <input type="date" name="fechaFin" required
+                               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80">
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Observaciones</label>
+                    <textarea name="observaciones" rows="3"
+                              class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80"></textarea>
+                </div>
+                
+                <div class="flex gap-4">
+                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
+                        <i class="fas fa-save mr-2"></i>Guardar Sanción
+                    </button>
+                    <button type="button" id="cancelarSancionClub" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
+                        <i class="fas fa-times mr-2"></i>Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para nueva sanción personal -->
+    <div id="modalSancionPersonal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Nueva Sanción Personal</h2>
+                <button id="cerrarModalPersonal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="formSancionPersonal">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Nombre de la Persona *</label>
+                        <input type="text" name="nombrePersona" required
+                               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">DNI</label>
+                        <input type="text" name="dniPersona"
+                               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Edad</label>
+                        <input type="number" name="edadPersona"
+                               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Deporte *</label>
+                        <select name="deporte" required
+                                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80">
+                            <option value="">Seleccionar deporte</option>
+                            <option value="Fútbol">Fútbol</option>
+                            <option value="Básquetbol">Básquetbol</option>
+                            <option value="Voleibol">Voleibol</option>
+                            <option value="Rugby">Rugby</option>
+                            <option value="Hockey">Hockey</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Fecha Inicio *</label>
+                        <input type="date" name="fechaInicio" required
+                               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Fecha Fin *</label>
+                        <input type="date" name="fechaFin" required
+                               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80">
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Observaciones</label>
+                    <textarea name="observaciones" rows="3"
+                              class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80"></textarea>
+                </div>
+                
+                <div class="flex gap-4">
+                    <button type="submit" class="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
+                        <i class="fas fa-save mr-2"></i>Guardar Sanción
+                    </button>
+                    <button type="button" id="cancelarSancionPersonal" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
+                        <i class="fas fa-times mr-2"></i>Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
