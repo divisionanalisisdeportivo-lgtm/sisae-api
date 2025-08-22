@@ -29,7 +29,7 @@ export default function Header() {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-white tracking-tight" data-testid="title-main">SISAE</h1>
-              <p className="text-slate-300 text-sm font-medium" data-testid="subtitle">Sistema Integral de Sanciones Deportivas</p>
+              <p className="text-slate-300 text-sm font-medium" data-testid="subtitle">Sistema de Sanciones y Estadísticas</p>
               <p className="text-slate-400 text-xs">Provincia de Córdoba</p>
             </div>
           </div>
