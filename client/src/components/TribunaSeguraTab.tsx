@@ -93,7 +93,7 @@ export default function TribunaSeguraTab({ filters, onFiltersChange }: TribunaSe
   return (
     <div className="space-y-6">
       {/* Action Buttons */}
-      <div className="flex justify-center space-x-4 mb-8">
+      <div className="flex justify-end space-x-4 mb-8">
         <button 
           onClick={() => setIsModalOpen(true)}
           className="gov-button-accent flex items-center space-x-2 py-4 px-8"

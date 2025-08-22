@@ -69,7 +69,7 @@ export default function ClubesTab({ filters, onFiltersChange }: ClubesTabProps) 
   return (
     <div className="space-y-6">
       {/* Action Button */}
-      <div className="flex justify-center mb-8">
+      <div className="flex justify-end mb-8">
         <button 
           onClick={() => setIsModalOpen(true)}
           className="gov-button-primary flex items-center space-x-2 py-4 px-8"
