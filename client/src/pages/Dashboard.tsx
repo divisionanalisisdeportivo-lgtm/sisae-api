@@ -42,7 +42,7 @@ export default function Dashboard() {
                   {activeTab === 'estadisticas' && 'Estadísticas y Reportes del Sistema'}
                 </h2>
                 <p className="text-sm text-gray-600 max-w-2xl">
-                  {activeTab === 'clubes' && 'Administración y seguimiento de sanciones aplicadas a clubes deportivos de la provincia'}
+                  {activeTab === 'clubes' && 'Sanciones aplicadas por COSEDEPRO Córdoba'}
                   {activeTab === 'tribuna' && 'Control y gestión de sanciones individuales bajo el programa Tribuna Segura'}
                   {activeTab === 'estadisticas' && 'Análisis estadístico y generación de reportes ejecutivos del sistema SISAE'}
                 </p>
