@@ -20,16 +20,42 @@ export interface IStorage {
 export class MemStorage implements IStorage {
   private clubSanctions: Map<string, ClubSanction>;
   private personalSanctions: Map<string, PersonalSanction>;
-  private nextLoadNumber: number;
+  private clubAvailableNumbers: number[];
+  private personalAvailableNumbers: number[];
+  private clubNextNumber: number;
+  private personalNextNumber: number;
 
   constructor() {
     this.clubSanctions = new Map();
     this.personalSanctions = new Map();
-    this.nextLoadNumber = 1;
+    this.clubAvailableNumbers = [];
+    this.personalAvailableNumbers = [];
+    this.clubNextNumber = 1;
+    this.personalNextNumber = 1;
   }
 
-  private getNextLoadNumber(): number {
-    return this.nextLoadNumber++;
+  private getNextClubNumber(): number {
+    if (this.clubAvailableNumbers.length > 0) {
+      return this.clubAvailableNumbers.shift()!;
+    }
+    return this.clubNextNumber++;
+  }
+
+  private getNextPersonalNumber(): number {
+    if (this.personalAvailableNumbers.length > 0) {
+      return this.personalAvailableNumbers.shift()!;
+    }
+    return this.personalNextNumber++;
+  }
+
+  private returnClubNumber(number: number): void {
+    this.clubAvailableNumbers.push(number);
+    this.clubAvailableNumbers.sort((a, b) => a - b);
+  }
+
+  private returnPersonalNumber(number: number): void {
+    this.personalAvailableNumbers.push(number);
+    this.personalAvailableNumbers.sort((a, b) => a - b);
   }
 
   // Club sanctions methods
@@ -43,7 +69,7 @@ export class MemStorage implements IStorage {
 
   async createClubSanction(insertSanction: InsertClubSanction): Promise<ClubSanction> {
     const id = randomUUID();
-    const numeroCarga = this.getNextLoadNumber();
+    const numeroCarga = this.getNextClubNumber();
     const sanction: ClubSanction = {
       ...insertSanction,
       id,
@@ -66,7 +92,12 @@ export class MemStorage implements IStorage {
   }
 
   async deleteClubSanction(id: string): Promise<boolean> {
-    return this.clubSanctions.delete(id);
+    const sanction = this.clubSanctions.get(id);
+    if (sanction) {
+      this.returnClubNumber(sanction.numeroCarga);
+      return this.clubSanctions.delete(id);
+    }
+    return false;
   }
 
   // Personal sanctions methods
@@ -80,7 +111,7 @@ export class MemStorage implements IStorage {
 
   async createPersonalSanction(insertSanction: InsertPersonalSanction): Promise<PersonalSanction> {
     const id = randomUUID();
-    const numeroCarga = this.getNextLoadNumber();
+    const numeroCarga = this.getNextPersonalNumber();
     const sanction: PersonalSanction = {
       ...insertSanction,
       id,
@@ -103,7 +134,12 @@ export class MemStorage implements IStorage {
   }
 
   async deletePersonalSanction(id: string): Promise<boolean> {
-    return this.personalSanctions.delete(id);
+    const sanction = this.personalSanctions.get(id);
+    if (sanction) {
+      this.returnPersonalNumber(sanction.numeroCarga);
+      return this.personalSanctions.delete(id);
+    }
+    return false;
   }
 }
 

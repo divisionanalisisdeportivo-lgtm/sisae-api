@@ -129,7 +129,7 @@ export default function PersonalSanctionModal({ isOpen, onClose }: PersonalSanct
           <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-4">
             <div className="flex items-center text-blue-700">
               <i className="fas fa-info-circle mr-2"></i>
-              <span className="font-medium">El número de carga se asignará automáticamente al guardar la sanción</span>
+              <span className="font-medium">El número de carga de tribuna segura se asignará automáticamente al guardar la sanción</span>
             </div>
           </div>
 

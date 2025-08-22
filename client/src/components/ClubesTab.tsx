@@ -171,7 +171,7 @@ export default function ClubesTab({ filters, onFiltersChange }: ClubesTabProps) 
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-3">
-                      <span className="bg-gray-600 text-white text-xs font-bold px-2 py-1 rounded">#{(sanction as any).numeroCarga || '---'}</span>
+                      <span className="bg-orange-600 text-white text-xs font-bold px-2 py-1 rounded">C-{String((sanction as any).numeroCarga || '---').padStart(3, '0')}</span>
                       <h3 className="text-lg font-bold text-gray-800">{sanction.nombreSancionado}</h3>
                       <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                         isActive(sanction) 
