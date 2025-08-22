@@ -83,7 +83,7 @@ export default function ClubesTab({ filters, onFiltersChange }: ClubesTabProps) 
       {/* Filters */}
       <div className="gov-filter-section">
         <h3 className="gov-section-title">
-          <i className="fas fa-filter mr-3 text-blue-600"></i>Filtros de Búsqueda
+          <i className="fas fa-filter mr-3" style={{color: 'var(--sisae-orange-primary)'}}></i>Filtros de Búsqueda
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
@@ -143,9 +143,9 @@ export default function ClubesTab({ filters, onFiltersChange }: ClubesTabProps) 
       <div className="gov-results-section">
         <div className="flex items-center justify-between mb-6">
           <h3 className="gov-section-title">
-            <i className="fas fa-list mr-3 text-blue-600"></i>Registro de Sanciones - Clubes Deportivos
+            <i className="fas fa-list mr-3" style={{color: 'var(--sisae-orange-primary)'}}></i>Registro de Sanciones - Clubes Deportivos
           </h3>
-          <div className="bg-blue-50 text-blue-700 px-4 py-2 rounded-md border border-blue-200">
+          <div className="bg-gradient-to-r from-orange-50 to-yellow-50 text-orange-700 px-4 py-2 rounded-md border border-orange-200">
             <span className="font-semibold" data-testid="results-count">
               {filteredSanctions.length} resultado{filteredSanctions.length !== 1 ? 's' : ''}
             </span>

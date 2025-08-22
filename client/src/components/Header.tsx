@@ -20,34 +20,43 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="bg-gradient-to-r from-slate-800 to-slate-700 shadow-lg sticky top-0 z-50 border-b border-slate-600">
+    <header className="sisae-gradient-bg shadow-xl sticky top-0 z-50 border-b border-gray-800">
       <div className="container mx-auto px-6 py-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-5">
-            <div className="w-14 h-14 rounded-lg bg-white flex items-center justify-center shadow-md">
-              <i className="fas fa-gavel text-slate-700 text-2xl" data-testid="logo-icon"></i>
+            <div className="w-16 h-16 rounded-xl sisae-icon-container flex items-center justify-center shadow-lg">
+              <img 
+                src="/attached_assets/sisae-icon.png_1755871496091.png" 
+                alt="SISAE" 
+                className="w-12 h-12 object-contain"
+                data-testid="logo-icon"
+              />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white tracking-tight" data-testid="title-main">SISAE</h1>
-              <p className="text-slate-300 text-sm font-medium" data-testid="subtitle">Sistema de Sanciones y Estadísticas</p>
-              <p className="text-slate-400 text-xs">Provincia de Córdoba</p>
+              <h1 className="text-3xl font-bold text-white tracking-tight" data-testid="title-main">
+                <span className="bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">
+                  SISAE
+                </span>
+              </h1>
+              <p className="text-gray-300 text-sm font-medium" data-testid="subtitle">Sistema de Sanciones y Estadísticas</p>
+              <p className="text-gray-400 text-xs">Provincia de Córdoba</p>
             </div>
           </div>
           
           <div className="hidden md:flex items-center">
             <div 
               id="status"
-              className={`flex items-center space-x-2 px-4 py-2 rounded-md border ${
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg border-2 backdrop-blur-sm ${
                 isOnline 
-                  ? 'bg-green-50 text-green-800 border-green-200' 
-                  : 'bg-red-50 text-red-800 border-red-200'
+                  ? 'bg-green-900/20 text-green-300 border-green-400/30' 
+                  : 'bg-red-900/20 text-red-300 border-red-400/30'
               }`}
               data-testid="status-indicator"
             >
-              <div className={`w-2.5 h-2.5 rounded-full animate-pulse ${
-                isOnline ? 'bg-green-500' : 'bg-red-500'
-              }`}></div>
-              <span className="text-sm font-medium">
+              <div className={`w-3 h-3 rounded-full ${
+                isOnline ? 'bg-green-400 shadow-lg shadow-green-400/50' : 'bg-red-400 shadow-lg shadow-red-400/50'
+              } animate-pulse`}></div>
+              <span className="text-sm font-semibold">
                 {isOnline ? 'Sistema Activo' : 'Sin Conexión'}
               </span>
             </div>

@@ -25,15 +25,15 @@ export default function TabNavigation({ activeTab, onTabChange }: TabNavigationP
               }`}
               data-testid={`tab-${tab.id}`}
             >
-              <div className={`w-10 h-10 rounded-md flex items-center justify-center ${
+              <div className={`w-12 h-12 rounded-lg flex items-center justify-center shadow-md ${
                 activeTab === tab.id 
-                  ? 'bg-blue-100 text-blue-700' 
-                  : 'bg-slate-100 text-slate-600 group-hover:bg-blue-50 group-hover:text-blue-700'
-              } transition-colors duration-200`}>
+                  ? 'bg-gradient-to-br from-orange-100 to-yellow-100 text-orange-600 border-2 border-orange-300' 
+                  : 'bg-gray-100 text-gray-600 border-2 border-transparent hover:bg-gradient-to-br hover:from-orange-50 hover:to-yellow-50 hover:text-orange-500 hover:border-orange-200'
+              } transition-all duration-200`}>
                 <i className={`${tab.icon} text-lg`}></i>
               </div>
-              <div className="text-left">
-                <span className="font-semibold block">{tab.label}</span>
+              <div className="text-left ml-2">
+                <span className="font-semibold block text-base">{tab.label}</span>
                 <span className="text-xs opacity-70">
                   {tab.id === 'clubes' && 'Gestión de clubes'}
                   {tab.id === 'tribuna' && 'Sanciones personales'}

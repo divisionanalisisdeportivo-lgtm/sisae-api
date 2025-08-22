@@ -115,7 +115,7 @@ export default function TribunaSeguraTab({ filters, onFiltersChange }: TribunaSe
       {/* Filters */}
       <div className="gov-filter-section">
         <h3 className="gov-section-title">
-          <i className="fas fa-filter mr-3 text-orange-600"></i>Filtros de Búsqueda
+          <i className="fas fa-filter mr-3" style={{color: 'var(--sisae-yellow)'}}></i>Filtros de Búsqueda
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
@@ -175,9 +175,9 @@ export default function TribunaSeguraTab({ filters, onFiltersChange }: TribunaSe
       <div className="gov-results-section">
         <div className="flex items-center justify-between mb-6">
           <h3 className="gov-section-title">
-            <i className="fas fa-list mr-3 text-orange-600"></i>Registro Tribuna Segura - Sanciones Personales
+            <i className="fas fa-list mr-3" style={{color: 'var(--sisae-yellow)'}}></i>Registro Tribuna Segura - Sanciones Personales
           </h3>
-          <div className="bg-orange-50 text-orange-700 px-4 py-2 rounded-md border border-orange-200">
+          <div className="bg-gradient-to-r from-yellow-50 to-orange-50 text-yellow-700 px-4 py-2 rounded-md border border-yellow-200">
             <span className="font-semibold" data-testid="results-count">
               {filteredSanctions.length} resultado{filteredSanctions.length !== 1 ? 's' : ''}
             </span>

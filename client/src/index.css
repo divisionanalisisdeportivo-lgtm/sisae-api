@@ -12,25 +12,35 @@
 }
 
 :root {
-  --background: hsl(0, 0%, 100%);
-  --foreground: hsl(222.2, 84%, 4.9%);
+  /* SISAE Icon-based Color Palette */
+  --sisae-orange-primary: #FF6B35;
+  --sisae-orange-light: #FF7A00;
+  --sisae-yellow: #FFB800;
+  --sisae-red-alert: #E53935;
+  --sisae-gray-dark: #1a1a1a;
+  --sisae-gray-medium: #2a2a2a;
+  --sisae-gray-light: #4a4a4a;
+  --sisae-gray-lighter: #6a6a6a;
+  
+  --background: hsl(0, 0%, 98%);
+  --foreground: var(--sisae-gray-dark);
   --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(222.2, 84%, 4.9%);
+  --card-foreground: var(--sisae-gray-dark);
   --popover: hsl(0, 0%, 100%);
-  --popover-foreground: hsl(222.2, 84%, 4.9%);
-  --primary: hsl(221.2, 83.2%, 53.3%);
-  --primary-foreground: hsl(210, 40%, 98%);
-  --secondary: hsl(210, 40%, 96%);
-  --secondary-foreground: hsl(222.2, 84%, 4.9%);
-  --muted: hsl(210, 40%, 96%);
-  --muted-foreground: hsl(215.4, 16.3%, 46.9%);
-  --accent: hsl(210, 40%, 96%);
-  --accent-foreground: hsl(222.2, 84%, 4.9%);
-  --destructive: hsl(0, 84.2%, 60.2%);
-  --destructive-foreground: hsl(210, 40%, 98%);
-  --border: hsl(214.3, 31.8%, 91.4%);
-  --input: hsl(214.3, 31.8%, 91.4%);
-  --ring: hsl(221.2, 83.2%, 53.3%);
+  --popover-foreground: var(--sisae-gray-dark);
+  --primary: var(--sisae-orange-primary);
+  --primary-foreground: hsl(0, 0%, 98%);
+  --secondary: var(--sisae-gray-light);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --muted: hsl(0, 0%, 96%);
+  --muted-foreground: var(--sisae-gray-lighter);
+  --accent: var(--sisae-yellow);
+  --accent-foreground: var(--sisae-gray-dark);
+  --destructive: var(--sisae-red-alert);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --border: hsl(0, 0%, 90%);
+  --input: hsl(0, 0%, 90%);
+  --ring: var(--sisae-orange-primary);
   --radius: 0.5rem;
 }
 
@@ -62,8 +72,8 @@
   }
   body {
     font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8fafc;
-    color: #0f172a;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    color: var(--sisae-gray-dark);
     min-height: 100vh;
     letter-spacing: -0.01em;
   }
@@ -80,23 +90,50 @@
   }
 
   .gov-button-primary {
-    @apply bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 px-6 rounded-md transition-all duration-200 shadow-sm hover:shadow-md border border-blue-800;
+    background: linear-gradient(135deg, var(--sisae-orange-primary) 0%, var(--sisae-orange-light) 100%);
+    @apply text-white font-semibold py-3 px-6 rounded-md transition-all duration-200 shadow-lg hover:shadow-xl border-0;
+  }
+
+  .gov-button-primary:hover {
+    background: linear-gradient(135deg, var(--sisae-orange-light) 0%, var(--sisae-yellow) 100%);
+    transform: translateY(-1px);
   }
 
   .gov-button-secondary {
-    @apply bg-slate-600 hover:bg-slate-700 text-white font-medium py-3 px-6 rounded-md transition-all duration-200 shadow-sm hover:shadow-md border border-slate-700;
+    background: linear-gradient(135deg, var(--sisae-gray-medium) 0%, var(--sisae-gray-light) 100%);
+    @apply text-white font-medium py-3 px-6 rounded-md transition-all duration-200 shadow-lg hover:shadow-xl border-0;
+  }
+
+  .gov-button-secondary:hover {
+    background: linear-gradient(135deg, var(--sisae-gray-light) 0%, var(--sisae-gray-lighter) 100%);
+    transform: translateY(-1px);
   }
 
   .gov-button-accent {
-    @apply bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-md transition-all duration-200 shadow-sm hover:shadow-md border border-orange-700;
+    background: linear-gradient(135deg, var(--sisae-yellow) 0%, #FFA500 100%);
+    @apply text-white font-semibold py-3 px-6 rounded-md transition-all duration-200 shadow-lg hover:shadow-xl border-0;
+  }
+
+  .gov-button-accent:hover {
+    background: linear-gradient(135deg, #FFA500 0%, var(--sisae-orange-light) 100%);
+    transform: translateY(-1px);
   }
 
   .gov-input {
-    @apply w-full px-4 py-3 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white text-slate-900 placeholder-slate-500;
+    @apply w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:border-transparent transition-all duration-200 bg-white shadow-sm;
+    color: var(--sisae-gray-dark);
+  }
+
+  .gov-input:focus {
+    outline: none;
+    ring-color: var(--sisae-orange-primary);
+    border-color: var(--sisae-orange-primary);
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
   }
 
   .gov-section-title {
-    @apply text-xl font-semibold text-slate-800 mb-6 flex items-center;
+    @apply text-xl font-semibold mb-6 flex items-center;
+    color: var(--sisae-gray-dark);
   }
 
   .gov-stats-card {
@@ -128,18 +165,38 @@
   }
 
   .gov-tab-active {
-    @apply border-blue-700 text-blue-700 bg-blue-50 shadow-sm;
+    border-color: var(--sisae-orange-primary);
+    color: var(--sisae-orange-primary);
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(255, 184, 0, 0.05) 100%);
+    @apply shadow-sm;
   }
 
   .gov-tab-inactive {
-    @apply border-transparent text-slate-600 hover:text-blue-700 hover:border-blue-300 hover:bg-slate-50;
+    @apply border-transparent hover:bg-gray-50 transition-all duration-200;
+    color: var(--sisae-gray-light);
+  }
+
+  .gov-tab-inactive:hover {
+    color: var(--sisae-orange-primary);
+    border-color: var(--sisae-orange-light);
+    background: rgba(255, 107, 53, 0.02);
   }
 
   .gov-filter-section {
-    @apply bg-white rounded-lg shadow-sm border border-slate-200 p-6;
+    @apply bg-white rounded-lg shadow-md border border-gray-200 p-6;
+    border-left: 4px solid var(--sisae-orange-primary);
   }
 
   .gov-results-section {
-    @apply bg-white rounded-lg shadow-sm border border-slate-200 p-6;
+    @apply bg-white rounded-lg shadow-md border border-gray-200 p-6;
+  }
+
+  .sisae-gradient-bg {
+    background: linear-gradient(135deg, var(--sisae-gray-dark) 0%, var(--sisae-gray-medium) 100%);
+  }
+
+  .sisae-icon-container {
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(255, 184, 0, 0.1) 100%);
+    border: 2px solid var(--sisae-orange-primary);
   }
 }
