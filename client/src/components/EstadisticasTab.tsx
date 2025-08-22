@@ -274,6 +274,18 @@ export default function EstadisticasTab() {
 
   return (
     <div className="space-y-6">
+      {/* Action Buttons */}
+      <div className="flex justify-end space-x-4 mb-8">
+        <button 
+          onClick={generateStatisticsReport}
+          className="bg-red-700 hover:bg-red-800 text-white font-semibold py-4 px-6 rounded-md transition-all duration-200 shadow-sm hover:shadow-md border border-red-800 flex items-center space-x-2"
+          data-testid="button-stats-pdf"
+        >
+          <i className="fas fa-file-pdf"></i>
+          <span>Reporte General PDF</span>
+        </button>
+      </div>
+
       {/* Main Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="gov-stats-card">
@@ -528,21 +540,6 @@ export default function EstadisticasTab() {
       </div>
 
       {/* Export Section */}
-      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-        <h3 className="text-xl font-bold text-gray-800 mb-6">
-          <i className="fas fa-download mr-2 text-gray-600"></i>Generar Reportes
-        </h3>
-        <div className="flex justify-start">
-          <button 
-            onClick={generateStatisticsReport}
-            className="bg-red-700 hover:bg-red-800 text-white font-semibold py-4 px-6 rounded-md transition-all duration-200 shadow-sm hover:shadow-md border border-red-800 flex items-center space-x-2"
-            data-testid="button-stats-pdf"
-          >
-            <i className="fas fa-file-pdf"></i>
-            <span>Reporte General PDF</span>
-          </button>
-        </div>
-      </div>
     </div>
   );
 }
