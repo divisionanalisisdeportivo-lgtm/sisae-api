@@ -52,7 +52,40 @@ const UBICACIONES = [
   'Unión',
   'Presidente Roque Sáenz Peña'
 ];
-const TIPOS_SANCION = ['Suspensión', 'Multa', 'Amonestación'];
+const TIPOS_SANCION = [
+  'Suspensión de actividades',
+  'Multa económica',
+  'Amonestación escrita',
+  'Clausura temporal de cancha',
+  'Pérdida de puntos',
+  'Suspensión de dirigentes',
+  'Inhabilitación de instalaciones',
+  'Partido a puertas cerradas',
+  'Suspensión de categorías menores'
+];
+
+const MOTIVOS_SANCION = [
+  'Peleas en tribunas',
+  'Uso de pirotecnia',
+  'Cuestiones organizativas',
+  'Falta de seguridad en el estadio',
+  'Agresiones a árbitros',
+  'Incidentes con jugadores visitantes',
+  'Falta de control sobre espectadores',
+  'Problemas de infraestructura',
+  'Incumplimiento de normativas',
+  'Comportamiento antideportivo de dirigentes',
+  'Venta irregular de entradas',
+  'Insuficiente personal de seguridad',
+  'Ingreso de objetos prohibidos',
+  'Daños a instalaciones',
+  'Alteración del orden público',
+  'Incumplimiento de protocolos sanitarios',
+  'Sobreventa de localidades',
+  'Falta de ambulancia médica',
+  'Deficiencias en iluminación',
+  'Otros motivos organizativos'
+];
 
 export default function ClubSanctionModal({ isOpen, onClose }: ClubSanctionModalProps) {
   const { toast } = useToast();
@@ -66,6 +99,7 @@ export default function ClubSanctionModal({ isOpen, onClose }: ClubSanctionModal
       deporte: "",
       ubicacion: "",
       tipoSancion: "",
+      motivoSancion: "",
       fechaInicio: "",
       fechaFin: "",
       observaciones: "",
@@ -184,7 +218,7 @@ export default function ClubSanctionModal({ isOpen, onClose }: ClubSanctionModal
                 onValueChange={(value) => form.setValue("tipoSancion", value)}
               >
                 <SelectTrigger data-testid="select-sanction-type">
-                  <SelectValue placeholder="Seleccionar tipo" />
+                  <SelectValue placeholder="Seleccionar tipo de sanción" />
                 </SelectTrigger>
                 <SelectContent>
                   {TIPOS_SANCION.map((tipo) => (
@@ -196,6 +230,28 @@ export default function ClubSanctionModal({ isOpen, onClose }: ClubSanctionModal
               </Select>
               {form.formState.errors.tipoSancion && (
                 <p className="text-red-500 text-sm">{form.formState.errors.tipoSancion.message}</p>
+              )}
+            </div>
+            
+            <div>
+              <Label htmlFor="motivoSancion">Motivo de la Sanción *</Label>
+              <Select
+                value={form.watch("motivoSancion")}
+                onValueChange={(value) => form.setValue("motivoSancion", value)}
+              >
+                <SelectTrigger data-testid="select-sanction-reason">
+                  <SelectValue placeholder="Seleccionar motivo" />
+                </SelectTrigger>
+                <SelectContent>
+                  {MOTIVOS_SANCION.map((motivo) => (
+                    <SelectItem key={motivo} value={motivo}>
+                      {motivo}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {form.formState.errors.motivoSancion && (
+                <p className="text-red-500 text-sm">{form.formState.errors.motivoSancion.message}</p>
               )}
             </div>
             
@@ -227,12 +283,12 @@ export default function ClubSanctionModal({ isOpen, onClose }: ClubSanctionModal
           </div>
           
           <div>
-            <Label htmlFor="observaciones">Observaciones</Label>
+            <Label htmlFor="observaciones">Observaciones y Detalles</Label>
             <Textarea
               id="observaciones"
               {...form.register("observaciones")}
-              placeholder="Detalles adicionales sobre la sanción..."
-              rows={3}
+              placeholder="Descripción detallada de los hechos, circunstancias, medidas adoptadas, etc..."
+              rows={4}
               data-testid="textarea-observations"
             />
           </div>

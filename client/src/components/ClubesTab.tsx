@@ -181,18 +181,22 @@ export default function ClubesTab({ filters, onFiltersChange }: ClubesTabProps) 
                       </span>
                     </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
                       <div>
                         <span className="font-medium text-gray-600">Deporte:</span>
                         <p className="text-gray-800">{sanction.deporte}</p>
                       </div>
                       <div>
-                        <span className="font-medium text-gray-600">Ubicación:</span>
+                        <span className="font-medium text-gray-600">Departamento:</span>
                         <p className="text-gray-800">{sanction.ubicacion}</p>
                       </div>
                       <div>
-                        <span className="font-medium text-gray-600">Tipo:</span>
+                        <span className="font-medium text-gray-600">Tipo de Sanción:</span>
                         <p className="text-gray-800">{sanction.tipoSancion}</p>
+                      </div>
+                      <div>
+                        <span className="font-medium text-gray-600">Motivo:</span>
+                        <p className="text-gray-800">{(sanction as any).motivoSancion || 'No especificado'}</p>
                       </div>
                     </div>
                     
