@@ -20,10 +20,16 @@ export interface IStorage {
 export class MemStorage implements IStorage {
   private clubSanctions: Map<string, ClubSanction>;
   private personalSanctions: Map<string, PersonalSanction>;
+  private nextLoadNumber: number;
 
   constructor() {
     this.clubSanctions = new Map();
     this.personalSanctions = new Map();
+    this.nextLoadNumber = 1;
+  }
+
+  private getNextLoadNumber(): number {
+    return this.nextLoadNumber++;
   }
 
   // Club sanctions methods
@@ -37,9 +43,11 @@ export class MemStorage implements IStorage {
 
   async createClubSanction(insertSanction: InsertClubSanction): Promise<ClubSanction> {
     const id = randomUUID();
+    const numeroCarga = this.getNextLoadNumber();
     const sanction: ClubSanction = {
       ...insertSanction,
       id,
+      numeroCarga,
       fechaCreacion: new Date(),
       observaciones: insertSanction.observaciones || null,
       actaPdf: insertSanction.actaPdf || null,
@@ -72,9 +80,11 @@ export class MemStorage implements IStorage {
 
   async createPersonalSanction(insertSanction: InsertPersonalSanction): Promise<PersonalSanction> {
     const id = randomUUID();
+    const numeroCarga = this.getNextLoadNumber();
     const sanction: PersonalSanction = {
       ...insertSanction,
       id,
+      numeroCarga,
       fechaCreacion: new Date(),
       observaciones: insertSanction.observaciones || null,
       actaPdf: insertSanction.actaPdf || null,

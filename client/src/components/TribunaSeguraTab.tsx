@@ -203,6 +203,7 @@ export default function TribunaSeguraTab({ filters, onFiltersChange }: TribunaSe
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-3">
+                      <span className="bg-gray-600 text-white text-xs font-bold px-2 py-1 rounded">#{(sanction as any).numeroCarga || '---'}</span>
                       <h3 className="text-lg font-bold text-gray-800">{sanction.nombrePersona}</h3>
                       <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                         isActive(sanction) 

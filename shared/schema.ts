@@ -5,6 +5,7 @@ import { z } from "zod";
 
 export const clubSanctions = pgTable("club_sanctions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  numeroCarga: integer("numero_carga").notNull(),
   nombreSancionado: text("nombre_sancionado").notNull(),
   deporte: text("deporte").notNull(),
   ubicacion: text("ubicacion").notNull(),
@@ -19,6 +20,7 @@ export const clubSanctions = pgTable("club_sanctions", {
 
 export const personalSanctions = pgTable("personal_sanctions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  numeroCarga: integer("numero_carga").notNull(),
   nombrePersona: text("nombre_persona").notNull(),
   dniPersona: text("dni_persona").notNull(),
   edadPersona: integer("edad_persona").notNull(),

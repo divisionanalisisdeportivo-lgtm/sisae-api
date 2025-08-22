@@ -126,6 +126,13 @@ export default function PersonalSanctionModal({ isOpen, onClose }: PersonalSanct
         </DialogHeader>
         
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-4">
+            <div className="flex items-center text-blue-700">
+              <i className="fas fa-info-circle mr-2"></i>
+              <span className="font-medium">El número de carga se asignará automáticamente al guardar la sanción</span>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="nombrePersona" className="text-gray-700">Nombre y Apellido *</Label>
