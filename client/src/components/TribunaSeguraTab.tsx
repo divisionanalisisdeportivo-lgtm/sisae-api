@@ -93,37 +93,39 @@ export default function TribunaSeguraTab({ filters, onFiltersChange }: TribunaSe
   return (
     <div className="space-y-6">
       {/* Action Buttons */}
-      <div className="flex justify-center space-x-4">
+      <div className="flex justify-center space-x-4 mb-8">
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-4 px-8 rounded-lg transition-colors shadow-md transform hover:scale-105"
+          className="gov-button-accent flex items-center space-x-2 py-4 px-8"
           data-testid="button-new-personal-sanction"
         >
-          <i className="fas fa-user-plus mr-2"></i>Nueva Sanción Personal
+          <i className="fas fa-user-plus"></i>
+          <span>Nueva Sanción Personal</span>
         </button>
         <button 
           onClick={generateTribunaSeguraReport}
-          className="bg-red-600 hover:bg-red-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors shadow-md transform hover:scale-105"
+          className="bg-red-700 hover:bg-red-800 text-white font-semibold py-4 px-6 rounded-md transition-all duration-200 shadow-sm hover:shadow-md border border-red-800 flex items-center space-x-2"
           data-testid="button-export-tribuna"
         >
-          <i className="fas fa-file-pdf mr-2"></i>Reporte PDF
+          <i className="fas fa-file-pdf"></i>
+          <span>Generar Reporte PDF</span>
         </button>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-        <h3 className="text-xl font-bold text-gray-800 mb-4">
-          <i className="fas fa-filter mr-2 text-orange-600"></i>Filtros
+      <div className="gov-filter-section">
+        <h3 className="gov-section-title">
+          <i className="fas fa-filter mr-3 text-orange-600"></i>Filtros de Búsqueda
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Buscar</label>
             <input 
               type="text" 
-              placeholder="Nombre, DNI, deporte..." 
+              placeholder="Buscar por nombre, DNI, deporte..." 
               value={filters.search}
               onChange={(e) => handleFilterChange('search', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+              className="gov-input"
               data-testid="input-search-filter"
             />
           </div>
@@ -133,7 +135,7 @@ export default function TribunaSeguraTab({ filters, onFiltersChange }: TribunaSe
             <select 
               value={filters.sport}
               onChange={(e) => handleFilterChange('sport', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+              className="gov-input"
               data-testid="select-sport-filter"
             >
               <option value="">Todos los deportes</option>
@@ -148,7 +150,7 @@ export default function TribunaSeguraTab({ filters, onFiltersChange }: TribunaSe
             <select 
               value={filters.status}
               onChange={(e) => handleFilterChange('status', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+              className="gov-input"
               data-testid="select-status-filter"
             >
               <option value="">Todos</option>
@@ -160,24 +162,26 @@ export default function TribunaSeguraTab({ filters, onFiltersChange }: TribunaSe
           <div className="flex items-end">
             <button 
               onClick={clearFilters}
-              className="w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-lg transition-colors shadow-sm"
+              className="w-full gov-button-secondary py-3 px-4"
               data-testid="button-clear-filters"
             >
-              <i className="fas fa-broom mr-2"></i>Limpiar
+              <i className="fas fa-broom mr-2"></i>Limpiar Filtros
             </button>
           </div>
         </div>
       </div>
 
       {/* Sanctions List */}
-      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+      <div className="gov-results-section">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-bold text-gray-800">
-            <i className="fas fa-list mr-2 text-orange-600"></i>Sanciones Personales
+          <h3 className="gov-section-title">
+            <i className="fas fa-list mr-3 text-orange-600"></i>Registro Tribuna Segura - Sanciones Personales
           </h3>
-          <span className="text-gray-600 font-medium" data-testid="results-count">
-            {filteredSanctions.length} resultado{filteredSanctions.length !== 1 ? 's' : ''}
-          </span>
+          <div className="bg-orange-50 text-orange-700 px-4 py-2 rounded-md border border-orange-200">
+            <span className="font-semibold" data-testid="results-count">
+              {filteredSanctions.length} resultado{filteredSanctions.length !== 1 ? 's' : ''}
+            </span>
+          </div>
         </div>
         
         {filteredSanctions.length === 0 ? (

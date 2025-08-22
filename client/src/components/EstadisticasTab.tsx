@@ -138,13 +138,16 @@ export default function EstadisticasTab() {
     <div className="space-y-6">
       {/* Main Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+        <div className="gov-stats-card">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm font-medium">Total Sanciones</p>
-              <p className="text-3xl font-bold text-gray-800">{totalSanctions}</p>
+              <p className="gov-text-small text-slate-600 font-medium">Total de Sanciones</p>
+              <p className="text-3xl font-bold text-slate-800">{totalSanctions}</p>
+              <p className="gov-text-small text-slate-500 mt-1">Registros activos</p>
             </div>
-            <i className="fas fa-gavel text-blue-500 text-2xl"></i>
+            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <i className="fas fa-gavel text-blue-600 text-xl"></i>
+            </div>
           </div>
         </div>
         

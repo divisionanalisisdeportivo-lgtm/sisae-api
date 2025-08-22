@@ -69,30 +69,31 @@ export default function ClubesTab({ filters, onFiltersChange }: ClubesTabProps) 
   return (
     <div className="space-y-6">
       {/* Action Button */}
-      <div className="flex justify-center">
+      <div className="flex justify-center mb-8">
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-8 rounded-lg transition-colors shadow-md transform hover:scale-105"
+          className="gov-button-primary flex items-center space-x-2 py-4 px-8"
           data-testid="button-new-club-sanction"
         >
-          <i className="fas fa-plus mr-2"></i>Nueva Sanción Club
+          <i className="fas fa-plus"></i>
+          <span>Nueva Sanción de Club</span>
         </button>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-        <h3 className="text-xl font-bold text-gray-800 mb-4">
-          <i className="fas fa-filter mr-2 text-blue-600"></i>Filtros
+      <div className="gov-filter-section">
+        <h3 className="gov-section-title">
+          <i className="fas fa-filter mr-3 text-blue-600"></i>Filtros de Búsqueda
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Buscar</label>
             <input 
               type="text" 
-              placeholder="Nombre, deporte, ubicación..." 
+              placeholder="Buscar por nombre, deporte, ubicación..." 
               value={filters.search}
               onChange={(e) => handleFilterChange('search', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="gov-input"
               data-testid="input-search-filter"
             />
           </div>
@@ -102,7 +103,7 @@ export default function ClubesTab({ filters, onFiltersChange }: ClubesTabProps) 
             <select 
               value={filters.sport}
               onChange={(e) => handleFilterChange('sport', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="gov-input"
               data-testid="select-sport-filter"
             >
               <option value="">Todos los deportes</option>
@@ -117,7 +118,7 @@ export default function ClubesTab({ filters, onFiltersChange }: ClubesTabProps) 
             <select 
               value={filters.status}
               onChange={(e) => handleFilterChange('status', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="gov-input"
               data-testid="select-status-filter"
             >
               <option value="">Todos</option>
@@ -129,24 +130,26 @@ export default function ClubesTab({ filters, onFiltersChange }: ClubesTabProps) 
           <div className="flex items-end">
             <button 
               onClick={clearFilters}
-              className="w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-lg transition-colors shadow-sm"
+              className="w-full gov-button-secondary py-3 px-4"
               data-testid="button-clear-filters"
             >
-              <i className="fas fa-broom mr-2"></i>Limpiar
+              <i className="fas fa-broom mr-2"></i>Limpiar Filtros
             </button>
           </div>
         </div>
       </div>
 
       {/* Sanctions List */}
-      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+      <div className="gov-results-section">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-bold text-gray-800">
-            <i className="fas fa-list mr-2 text-blue-600"></i>Sanciones de Clubes
+          <h3 className="gov-section-title">
+            <i className="fas fa-list mr-3 text-blue-600"></i>Registro de Sanciones - Clubes Deportivos
           </h3>
-          <span className="text-gray-600 font-medium" data-testid="results-count">
-            {filteredSanctions.length} resultado{filteredSanctions.length !== 1 ? 's' : ''}
-          </span>
+          <div className="bg-blue-50 text-blue-700 px-4 py-2 rounded-md border border-blue-200">
+            <span className="font-semibold" data-testid="results-count">
+              {filteredSanctions.length} resultado{filteredSanctions.length !== 1 ? 's' : ''}
+            </span>
+          </div>
         </div>
         
         {filteredSanctions.length === 0 ? (

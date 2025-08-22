@@ -11,26 +11,39 @@ export default function TabNavigation({ activeTab, onTabChange }: TabNavigationP
   ];
 
   return (
-    <div className="bg-white border-b border-gray-200 shadow-sm">
+    <nav className="bg-white border-b border-slate-200 shadow-sm">
       <div className="container mx-auto px-6">
-        <div className="flex justify-center space-x-12">
+        <div className="flex justify-center">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
-              className={`flex items-center space-x-3 py-5 px-4 border-b-3 font-semibold text-base transition-all duration-200 ${
+              className={`gov-tab ${
                 activeTab === tab.id
-                  ? 'border-blue-600 text-blue-600 bg-blue-50'
-                  : 'border-transparent text-gray-600 hover:text-blue-600 hover:border-blue-300 hover:bg-gray-50'
+                  ? 'gov-tab-active'
+                  : 'gov-tab-inactive'
               }`}
               data-testid={`tab-${tab.id}`}
             >
-              <i className={`${tab.icon} text-xl`}></i>
-              <span className="font-medium">{tab.label}</span>
+              <div className={`w-10 h-10 rounded-md flex items-center justify-center ${
+                activeTab === tab.id 
+                  ? 'bg-blue-100 text-blue-700' 
+                  : 'bg-slate-100 text-slate-600 group-hover:bg-blue-50 group-hover:text-blue-700'
+              } transition-colors duration-200`}>
+                <i className={`${tab.icon} text-lg`}></i>
+              </div>
+              <div className="text-left">
+                <span className="font-semibold block">{tab.label}</span>
+                <span className="text-xs opacity-70">
+                  {tab.id === 'clubes' && 'Gestión de clubes'}
+                  {tab.id === 'tribuna' && 'Sanciones personales'}
+                  {tab.id === 'estadisticas' && 'Reportes y análisis'}
+                </span>
+              </div>
             </button>
           ))}
         </div>
       </div>
-    </div>
+    </nav>
   );
 }

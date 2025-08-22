@@ -20,34 +20,42 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="bg-blue-600 shadow-md sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-4">
+    <header className="bg-gradient-to-r from-slate-800 to-slate-700 shadow-lg sticky top-0 z-50 border-b border-slate-600">
+      <div className="container mx-auto px-6 py-5">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-lg">
-              <i className="fas fa-gavel text-blue-600 text-xl" data-testid="logo-icon"></i>
+          <div className="flex items-center space-x-5">
+            <div className="w-14 h-14 rounded-lg bg-white flex items-center justify-center shadow-md">
+              <i className="fas fa-gavel text-slate-700 text-2xl" data-testid="logo-icon"></i>
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white" data-testid="title-main">SISAE</h1>
-              <p className="text-blue-100 text-sm" data-testid="subtitle">Sistema Integral de Sanciones Deportivas</p>
+              <h1 className="text-2xl font-bold text-white tracking-tight" data-testid="title-main">SISAE</h1>
+              <p className="text-slate-300 text-sm font-medium" data-testid="subtitle">Sistema Integral de Sanciones Deportivas</p>
+              <p className="text-slate-400 text-xs">Provincia de Córdoba</p>
             </div>
           </div>
           
-          <div 
-            id="status"
-            className={`hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-lg ${
-              isOnline 
-                ? 'bg-green-100 text-green-800 border border-green-200' 
-                : 'bg-red-100 text-red-800 border border-red-200'
-            }`}
-            data-testid="status-indicator"
-          >
-            <div className={`w-2 h-2 rounded-full animate-pulse ${
-              isOnline ? 'bg-green-500' : 'bg-red-500'
-            }`}></div>
-            <span className="text-sm font-medium">
-              {isOnline ? 'Conectado' : 'Sin conexión'}
-            </span>
+          <div className="hidden md:flex items-center space-x-6">
+            <div className="text-right text-slate-300">
+              <p className="text-sm font-medium">Ministerio de Deportes</p>
+              <p className="text-xs text-slate-400">Gobierno de Córdoba</p>
+            </div>
+            
+            <div 
+              id="status"
+              className={`flex items-center space-x-2 px-4 py-2 rounded-md border ${
+                isOnline 
+                  ? 'bg-green-50 text-green-800 border-green-200' 
+                  : 'bg-red-50 text-red-800 border-red-200'
+              }`}
+              data-testid="status-indicator"
+            >
+              <div className={`w-2.5 h-2.5 rounded-full animate-pulse ${
+                isOnline ? 'bg-green-500' : 'bg-red-500'
+              }`}></div>
+              <span className="text-sm font-medium">
+                {isOnline ? 'Sistema Activo' : 'Sin Conexión'}
+              </span>
+            </div>
           </div>
         </div>
       </div>
