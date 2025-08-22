@@ -5,6 +5,7 @@ import { insertClubSanctionSchema, insertPersonalSanctionSchema } from "@shared/
 import { z } from "zod";
 import { ObjectStorageService } from "./objectStorage";
 import { setupAuth, requireAuth } from "./auth";
+import { backupService } from "./backup";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication
@@ -190,6 +191,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error downloading object:", error);
       res.status(404).json({ error: "File not found" });
+    }
+  });
+
+  // Backup routes
+  app.post("/api/backup/create", requireAuth, async (req, res) => {
+    try {
+      const backupPath = await backupService.createBackup();
+      res.json({ 
+        success: true, 
+        message: "Respaldo creado exitosamente",
+        backupPath,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error creating backup:", error);
+      res.status(500).json({ error: "Failed to create backup" });
+    }
+  });
+
+  app.get("/api/backup/list", requireAuth, async (req, res) => {
+    try {
+      const backups = await backupService.getBackupList();
+      res.json({
+        success: true,
+        backups: backups.map(backup => ({
+          ...backup,
+          formattedDate: new Date(backup.date).toLocaleString('es-AR'),
+          formattedSize: `${Math.round(backup.size / 1024)} KB`
+        }))
+      });
+    } catch (error) {
+      console.error("Error listing backups:", error);
+      res.status(500).json({ error: "Failed to list backups" });
+    }
+  });
+
+  app.get("/api/backup/:fileName", requireAuth, async (req, res) => {
+    try {
+      const backupData = await backupService.getBackupData(req.params.fileName);
+      if (!backupData) {
+        return res.status(404).json({ error: "Backup not found" });
+      }
+      res.json(backupData);
+    } catch (error) {
+      console.error("Error getting backup data:", error);
+      res.status(500).json({ error: "Failed to get backup data" });
     }
   });
 

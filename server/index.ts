@@ -1,6 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { backupService } from "./backup";
 
 const app = express();
 app.use(express.json());
@@ -67,5 +68,10 @@ app.use((req, res, next) => {
     reusePort: true,
   }, () => {
     log(`serving on port ${port}`);
+    
+    // Initialize automatic backup system
+    backupService.scheduleAutomaticBackup().catch(error => {
+      console.error("Error initializing backup service:", error);
+    });
   });
 })();

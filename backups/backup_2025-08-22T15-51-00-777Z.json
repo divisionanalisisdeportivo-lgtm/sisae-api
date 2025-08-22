@@ -1,0 +1,38 @@
+{
+  "timestamp": "2025-08-22T15:51:00.777Z",
+  "version": "1.0",
+  "clubSanctions": [],
+  "personalSanctions": [],
+  "users": [
+    {
+      "id": "e6da0e73-7979-495a-9ae7-0de368283364",
+      "username": "lautarotorres",
+      "password": "[REDACTED]",
+      "role": "admin",
+      "isActive": true,
+      "temporaryAccess": false,
+      "accessExpires": null,
+      "lastLogin": "2025-08-22T15:47:22.445Z",
+      "createdAt": "2025-08-22T15:10:17.936Z",
+      "createdBy": null
+    },
+    {
+      "id": "c27ddf58-d0e6-4c3f-a50f-5b2110d1cd18",
+      "username": "pablocisterna",
+      "password": "[REDACTED]",
+      "role": "user",
+      "isActive": true,
+      "temporaryAccess": true,
+      "accessExpires": "2026-02-08T15:17:00.000Z",
+      "lastLogin": null,
+      "createdAt": "2025-08-22T15:18:13.222Z",
+      "createdBy": "e6da0e73-7979-495a-9ae7-0de368283364"
+    }
+  ],
+  "statistics": {
+    "totalClubSanctions": 0,
+    "totalPersonalSanctions": 0,
+    "totalUsers": 2,
+    "backupDate": "2025-08-22T15:51:00.777Z"
+  }
+}

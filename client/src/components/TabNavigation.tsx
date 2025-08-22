@@ -11,9 +11,12 @@ export default function TabNavigation({ activeTab, onTabChange, userRole }: TabN
     { id: 'estadisticas', label: 'Estadísticas', icon: 'fas fa-chart-bar' }
   ];
   
-  // Add admin tab if user is admin
+  // Add admin tabs if user is admin
   const tabs = userRole === 'admin' 
-    ? [...baseTabs, { id: 'administrar', label: 'Administrar', icon: 'fas fa-cog' }]
+    ? [...baseTabs, 
+       { id: 'administrar', label: 'Administrar', icon: 'fas fa-cog' },
+       { id: 'respaldos', label: 'Respaldos', icon: 'fas fa-save' }
+      ]
     : baseTabs;
 
   return (
@@ -45,6 +48,7 @@ export default function TabNavigation({ activeTab, onTabChange, userRole }: TabN
                   {tab.id === 'tribuna' && 'Sanciones personales'}
                   {tab.id === 'estadisticas' && 'Reportes y análisis'}
                   {tab.id === 'administrar' && 'Usuarios y permisos'}
+                  {tab.id === 'respaldos' && 'Seguridad de datos'}
                 </span>
               </div>
             </button>
