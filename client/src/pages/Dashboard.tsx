@@ -1,43 +1,39 @@
-import Header from "@/components/Header";
-import DashboardCards from "@/components/DashboardCards";
-import ActionButtons from "@/components/ActionButtons";
-import FiltersSection from "@/components/FiltersSection";
-import SanctionsList from "@/components/SanctionsList";
-import ClubSanctionModal from "@/components/ClubSanctionModal";
-import PersonalSanctionModal from "@/components/PersonalSanctionModal";
 import { useState } from "react";
+import Header from "@/components/Header";
+import TabNavigation from "@/components/TabNavigation";
+import ClubesTab from "@/components/ClubesTab";
+import TribunaSeguraTab from "@/components/TribunaSeguraTab";
+import EstadisticasTab from "@/components/EstadisticasTab";
 
 export default function Dashboard() {
-  const [isClubModalOpen, setIsClubModalOpen] = useState(false);
-  const [isPersonalModalOpen, setIsPersonalModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('clubes');
   const [filters, setFilters] = useState({
     search: "",
     sport: "",
     status: "",
   });
 
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'clubes':
+        return <ClubesTab filters={filters} onFiltersChange={setFilters} />;
+      case 'tribuna':
+        return <TribunaSeguraTab filters={filters} onFiltersChange={setFilters} />;
+      case 'estadisticas':
+        return <EstadisticasTab />;
+      default:
+        return <ClubesTab filters={filters} onFiltersChange={setFilters} />;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
+      <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
       
       <main className="container mx-auto px-4 py-8">
-        <DashboardCards />
-        <ActionButtons 
-          onOpenClubModal={() => setIsClubModalOpen(true)}
-          onOpenPersonalModal={() => setIsPersonalModalOpen(true)}
-        />
-        <FiltersSection filters={filters} onFiltersChange={setFilters} />
-        <SanctionsList filters={filters} />
+        {renderTabContent()}
       </main>
-
-      <ClubSanctionModal 
-        isOpen={isClubModalOpen} 
-        onClose={() => setIsClubModalOpen(false)} 
-      />
-      <PersonalSanctionModal 
-        isOpen={isPersonalModalOpen} 
-        onClose={() => setIsPersonalModalOpen(false)} 
-      />
     </div>
   );
 }
