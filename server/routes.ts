@@ -240,6 +240,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/backup/restore", requireAuth, async (req, res) => {
+    try {
+      const { fileName } = req.body;
+      if (!fileName) {
+        return res.status(400).json({ success: false, message: "Nombre de archivo requerido" });
+      }
+      
+      const result = await backupService.restoreFromBackup(fileName);
+      res.json(result);
+    } catch (error) {
+      console.error("Error restoring backup:", error);
+      res.status(500).json({ success: false, message: "Error al restaurar respaldo" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

@@ -63,8 +63,49 @@ export default function BackupManager() {
     enabled: !!selectedBackup,
   });
 
+  // Restore backup mutation
+  const restoreBackupMutation = useMutation({
+    mutationFn: (fileName: string) => 
+      apiRequest("POST", "/api/backup/restore", { fileName }).then(res => res.json()),
+    onSuccess: (response: any) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/club-sanctions"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/personal-sanctions"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/backup/list"] });
+      toast({
+        title: "¡Respaldo restaurado!",
+        description: response.message,
+        variant: "default",
+      });
+      setSelectedBackup(null);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "No se pudo restaurar el respaldo",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleCreateBackup = () => {
     createBackupMutation.mutate();
+  };
+
+  const handleRestoreBackup = () => {
+    if (selectedBackup) {
+      const confirmRestore = confirm(
+        "⚠️ ¿Estás seguro de que quieres restaurar este respaldo?\n\n" +
+        "Esta acción:\n" +
+        "• Creará un respaldo automático del estado actual\n" +
+        "• Reemplazará todas las sanciones con los datos del respaldo seleccionado\n" +
+        "• No se puede deshacer fácilmente\n\n" +
+        "¿Continuar con la restauración?"
+      );
+      
+      if (confirmRestore) {
+        restoreBackupMutation.mutate(selectedBackup);
+      }
+    }
   };
 
   return (
@@ -216,6 +257,29 @@ export default function BackupManager() {
                       </p>
                     </div>
                   </div>
+                </div>
+
+                {/* Restore Button */}
+                <div className="pt-4 border-t border-gray-200">
+                  <Button
+                    onClick={handleRestoreBackup}
+                    disabled={restoreBackupMutation.isPending}
+                    className="w-full bg-red-600 hover:bg-red-700 text-white"
+                    data-testid="button-restore-backup"
+                  >
+                    {restoreBackupMutation.isPending ? (
+                      <>
+                        <i className="fas fa-spinner fa-spin mr-2"></i>Restaurando...
+                      </>
+                    ) : (
+                      <>
+                        <i className="fas fa-undo mr-2"></i>Restaurar este Respaldo
+                      </>
+                    )}
+                  </Button>
+                  <p className="text-xs text-gray-500 mt-2 text-center">
+                    ⚠️ Esta acción reemplazará todos los datos actuales
+                  </p>
                 </div>
               </div>
             ) : (

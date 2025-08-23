@@ -113,6 +113,83 @@ export class BackupService {
     }
   }
 
+  // Restore system from backup
+  async restoreFromBackup(fileName: string): Promise<{ success: boolean; message: string; restoredData?: any }> {
+    try {
+      // First, create a backup of current state
+      await this.createBackup();
+      
+      // Load backup data
+      const backupData = await this.getBackupData(fileName);
+      if (!backupData) {
+        return { success: false, message: "No se pudo cargar el archivo de respaldo" };
+      }
+
+      // Clear existing data (except users to preserve authentication)
+      await storage.clearAllSanctions();
+
+      // Restore club sanctions
+      const restoredClubSanctions = [];
+      for (const clubSanction of backupData.clubSanctions) {
+        try {
+          const restored = await storage.createClubSanction({
+            nombreSancionado: clubSanction.nombreSancionado,
+            deporte: clubSanction.deporte,
+            ubicacion: clubSanction.ubicacion,
+            tipoSancion: clubSanction.tipoSancion,
+            motivoSancion: clubSanction.motivoSancion || [],
+            fechaInicio: clubSanction.fechaInicio,
+            fechaFin: clubSanction.fechaFin,
+            observaciones: clubSanction.observaciones || "",
+            actaPdf: clubSanction.actaPdf || ""
+          });
+          restoredClubSanctions.push(restored);
+        } catch (error) {
+          console.error('Error restoring club sanction:', error);
+        }
+      }
+
+      // Restore personal sanctions
+      const restoredPersonalSanctions = [];
+      for (const personalSanction of backupData.personalSanctions) {
+        try {
+          const restored = await storage.createPersonalSanction({
+            nombrePersona: personalSanction.nombrePersona,
+            dniPersona: personalSanction.dniPersona,
+            edadPersona: personalSanction.edadPersona,
+            deporte: personalSanction.deporte,
+            ubicacion: personalSanction.ubicacion,
+            motivoSancion: personalSanction.motivoSancion,
+            fechaInicio: personalSanction.fechaInicio,
+            fechaFin: personalSanction.fechaFin,
+            observaciones: personalSanction.observaciones || "",
+            actaPdf: personalSanction.actaPdf || ""
+          });
+          restoredPersonalSanctions.push(restored);
+        } catch (error) {
+          console.error('Error restoring personal sanction:', error);
+        }
+      }
+
+      return {
+        success: true,
+        message: `Restauración exitosa desde ${fileName}`,
+        restoredData: {
+          clubSanctions: restoredClubSanctions.length,
+          personalSanctions: restoredPersonalSanctions.length,
+          timestamp: backupData.timestamp
+        }
+      };
+
+    } catch (error) {
+      console.error('Error during restoration:', error);
+      return { 
+        success: false, 
+        message: `Error durante la restauración: ${error instanceof Error ? error.message : 'Error desconocido'}` 
+      };
+    }
+  }
+
   // Clean old backups, keep only the last 10
   private async cleanOldBackups() {
     try {

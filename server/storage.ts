@@ -35,6 +35,9 @@ export interface IStorage {
   deleteUser(id: string): Promise<boolean>;
   getAllUsers(): Promise<User[]>;
   
+  // Backup restoration
+  clearAllSanctions(): Promise<void>;
+  
   // Session store
   sessionStore: session.Store;
 }
@@ -197,6 +200,12 @@ export class DatabaseStorage implements IStorage {
 
   async getAllUsers(): Promise<User[]> {
     return await db.select().from(users).orderBy(users.createdAt);
+  }
+
+  // Clear all sanctions for backup restoration
+  async clearAllSanctions(): Promise<void> {
+    await db.delete(clubSanctions);
+    await db.delete(personalSanctions);
   }
 }
 
