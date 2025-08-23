@@ -1,6 +1,6 @@
 import { type ClubSanction, type PersonalSanction, type InsertClubSanction, type InsertPersonalSanction, type User, type InsertUser, clubSanctions, personalSanctions, users } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, lt, max } from "drizzle-orm";
+import { eq, and, lt, max, desc } from "drizzle-orm";
 import { randomUUID } from "crypto";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
@@ -61,7 +61,7 @@ export class DatabaseStorage implements IStorage {
 
   // Club sanctions methods
   async getClubSanctions(): Promise<ClubSanction[]> {
-    return await db.select().from(clubSanctions).orderBy(clubSanctions.fechaCreacion);
+    return await db.select().from(clubSanctions).orderBy(desc(clubSanctions.fechaCreacion));
   }
 
   async getClubSanction(id: string): Promise<ClubSanction | undefined> {
@@ -97,7 +97,7 @@ export class DatabaseStorage implements IStorage {
 
   // Personal sanctions methods
   async getPersonalSanctions(): Promise<PersonalSanction[]> {
-    return await db.select().from(personalSanctions).orderBy(personalSanctions.fechaCreacion);
+    return await db.select().from(personalSanctions).orderBy(desc(personalSanctions.fechaCreacion));
   }
 
   async getPersonalSanction(id: string): Promise<PersonalSanction | undefined> {
@@ -144,7 +144,7 @@ export class DatabaseStorage implements IStorage {
           eq(personalSanctions.reportadaEnPdf, false)
         )
       )
-      .orderBy(personalSanctions.fechaCreacion);
+      .orderBy(desc(personalSanctions.fechaCreacion));
   }
 
   async markPersonalSanctionsAsReported(sanctionIds: string[]): Promise<void> {
