@@ -55,15 +55,11 @@ const UBICACIONES = [
   'Presidente Roque Sáenz Peña'
 ];
 const TIPOS_SANCION = [
-  'Suspensión de actividades',
-  'Multa económica',
-  'Amonestación escrita',
-  'Clausura temporal de cancha',
-  'Pérdida de puntos',
-  'Suspensión de dirigentes',
-  'Inhabilitación de instalaciones',
-  'Partido a puertas cerradas',
-  'Suspensión de categorías menores'
+  'Sanciones económicas',
+  'Prohibición de banderas e instrumentos',
+  'Encuentros a puertas cerradas',
+  'Clausura del estadio',
+  'Otras'
 ];
 
 const MOTIVOS_SANCION = [
