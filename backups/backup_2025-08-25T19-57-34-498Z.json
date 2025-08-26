@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-08-22T15:51:00.777Z",
+  "timestamp": "2025-08-25T19:57:34.498Z",
   "version": "1.0",
   "clubSanctions": [],
   "personalSanctions": [],
@@ -12,7 +12,7 @@
       "isActive": true,
       "temporaryAccess": false,
       "accessExpires": null,
-      "lastLogin": "2025-08-22T15:47:22.445Z",
+      "lastLogin": "2025-08-23T23:14:15.159Z",
       "createdAt": "2025-08-22T15:10:17.936Z",
       "createdBy": null
     },
@@ -33,6 +33,6 @@
     "totalClubSanctions": 0,
     "totalPersonalSanctions": 0,
     "totalUsers": 2,
-    "backupDate": "2025-08-22T15:51:00.777Z"
+    "backupDate": "2025-08-25T19:57:34.498Z"
   }
 }

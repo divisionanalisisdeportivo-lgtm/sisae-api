@@ -128,11 +128,11 @@ export class BackupService {
       // Clear existing data (except users to preserve authentication)
       await storage.clearAllSanctions();
 
-      // Restore club sanctions
+      // Restore club sanctions with original numbers
       const restoredClubSanctions = [];
       for (const clubSanction of backupData.clubSanctions) {
         try {
-          const restored = await storage.createClubSanction({
+          const restored = await storage.createClubSanctionWithNumber({
             nombreSancionado: clubSanction.nombreSancionado,
             deporte: clubSanction.deporte,
             ubicacion: clubSanction.ubicacion,
@@ -142,18 +142,18 @@ export class BackupService {
             fechaFin: clubSanction.fechaFin,
             observaciones: clubSanction.observaciones || "",
             actaPdf: clubSanction.actaPdf || ""
-          });
+          }, clubSanction.numeroCarga);
           restoredClubSanctions.push(restored);
         } catch (error) {
           console.error('Error restoring club sanction:', error);
         }
       }
 
-      // Restore personal sanctions
+      // Restore personal sanctions with original numbers
       const restoredPersonalSanctions = [];
       for (const personalSanction of backupData.personalSanctions) {
         try {
-          const restored = await storage.createPersonalSanction({
+          const restored = await storage.createPersonalSanctionWithNumber({
             nombrePersona: personalSanction.nombrePersona,
             dniPersona: personalSanction.dniPersona,
             edadPersona: personalSanction.edadPersona,
@@ -164,7 +164,12 @@ export class BackupService {
             fechaFin: personalSanction.fechaFin,
             observaciones: personalSanction.observaciones || "",
             actaPdf: personalSanction.actaPdf || ""
-          });
+          }, personalSanction.numeroCarga);
+          
+          // Restore the reported status if it was true in the backup
+          if (personalSanction.reportadaEnPdf) {
+            await storage.markPersonalSanctionsAsReported([restored.id]);
+          }
           restoredPersonalSanctions.push(restored);
         } catch (error) {
           console.error('Error restoring personal sanction:', error);

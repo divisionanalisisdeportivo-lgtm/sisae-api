@@ -13,6 +13,7 @@ export interface IStorage {
   getClubSanctions(): Promise<ClubSanction[]>;
   getClubSanction(id: string): Promise<ClubSanction | undefined>;
   createClubSanction(sanction: InsertClubSanction): Promise<ClubSanction>;
+  createClubSanctionWithNumber(sanction: InsertClubSanction, numeroCarga: number): Promise<ClubSanction>;
   updateClubSanction(id: string, sanction: Partial<InsertClubSanction>): Promise<ClubSanction | undefined>;
   deleteClubSanction(id: string): Promise<boolean>;
   
@@ -20,6 +21,7 @@ export interface IStorage {
   getPersonalSanctions(): Promise<PersonalSanction[]>;
   getPersonalSanction(id: string): Promise<PersonalSanction | undefined>;
   createPersonalSanction(sanction: InsertPersonalSanction): Promise<PersonalSanction>;
+  createPersonalSanctionWithNumber(sanction: InsertPersonalSanction, numeroCarga: number): Promise<PersonalSanction>;
   updatePersonalSanction(id: string, sanction: Partial<InsertPersonalSanction>): Promise<PersonalSanction | undefined>;
   deletePersonalSanction(id: string): Promise<boolean>;
   
@@ -84,6 +86,17 @@ export class DatabaseStorage implements IStorage {
     return sanction;
   }
 
+  async createClubSanctionWithNumber(insertSanction: InsertClubSanction, numeroCarga: number): Promise<ClubSanction> {
+    const [sanction] = await db
+      .insert(clubSanctions)
+      .values({
+        ...insertSanction,
+        numeroCarga,
+      })
+      .returning();
+    return sanction;
+  }
+
   async updateClubSanction(id: string, updateData: Partial<InsertClubSanction>): Promise<ClubSanction | undefined> {
     const [sanction] = await db
       .update(clubSanctions)
@@ -110,6 +123,18 @@ export class DatabaseStorage implements IStorage {
 
   async createPersonalSanction(insertSanction: InsertPersonalSanction): Promise<PersonalSanction> {
     const numeroCarga = await this.getNextPersonalNumber();
+    const [sanction] = await db
+      .insert(personalSanctions)
+      .values({
+        ...insertSanction,
+        numeroCarga,
+        reportadaEnPdf: false,
+      })
+      .returning();
+    return sanction;
+  }
+
+  async createPersonalSanctionWithNumber(insertSanction: InsertPersonalSanction, numeroCarga: number): Promise<PersonalSanction> {
     const [sanction] = await db
       .insert(personalSanctions)
       .values({
