@@ -130,8 +130,14 @@ export class BackupService {
 
       // Restore club sanctions with original numbers
       const restoredClubSanctions = [];
-      for (const clubSanction of backupData.clubSanctions) {
+      console.log(`📋 Restaurando ${backupData.clubSanctions.length} sanciones de club...`);
+      
+      // Sort by numeroCarga to maintain proper order during restoration
+      const sortedClubSanctions = [...backupData.clubSanctions].sort((a, b) => a.numeroCarga - b.numeroCarga);
+      
+      for (const clubSanction of sortedClubSanctions) {
         try {
+          console.log(`🔄 Restaurando sanción club #${clubSanction.numeroCarga}: ${clubSanction.nombreSancionado} (${clubSanction.tipoSancion})`);
           const restored = await storage.createClubSanctionWithNumber({
             nombreSancionado: clubSanction.nombreSancionado,
             deporte: clubSanction.deporte,
@@ -143,16 +149,23 @@ export class BackupService {
             observaciones: clubSanction.observaciones || "",
             actaPdf: clubSanction.actaPdf || ""
           }, clubSanction.numeroCarga);
+          console.log(`✅ Sanción club restaurada con ID: ${restored.id}, número: ${restored.numeroCarga}`);
           restoredClubSanctions.push(restored);
         } catch (error) {
-          console.error('Error restoring club sanction:', error);
+          console.error(`❌ Error restoring club sanction #${clubSanction.numeroCarga}:`, error);
         }
       }
 
       // Restore personal sanctions with original numbers
       const restoredPersonalSanctions = [];
-      for (const personalSanction of backupData.personalSanctions) {
+      console.log(`👤 Restaurando ${backupData.personalSanctions.length} sanciones personales...`);
+      
+      // Sort by numeroCarga to maintain proper order during restoration
+      const sortedPersonalSanctions = [...backupData.personalSanctions].sort((a, b) => a.numeroCarga - b.numeroCarga);
+      
+      for (const personalSanction of sortedPersonalSanctions) {
         try {
+          console.log(`🔄 Restaurando sanción personal #${personalSanction.numeroCarga}: ${personalSanction.nombrePersona} (${personalSanction.motivoSancion})`);
           const restored = await storage.createPersonalSanctionWithNumber({
             nombrePersona: personalSanction.nombrePersona,
             dniPersona: personalSanction.dniPersona,
@@ -166,13 +179,15 @@ export class BackupService {
             actaPdf: personalSanction.actaPdf || ""
           }, personalSanction.numeroCarga);
           
+          console.log(`✅ Sanción personal restaurada con ID: ${restored.id}, número: ${restored.numeroCarga}`);
+          
           // Restore the reported status if it was true in the backup
           if (personalSanction.reportadaEnPdf) {
             await storage.markPersonalSanctionsAsReported([restored.id]);
           }
           restoredPersonalSanctions.push(restored);
         } catch (error) {
-          console.error('Error restoring personal sanction:', error);
+          console.error(`❌ Error restoring personal sanction #${personalSanction.numeroCarga}:`, error);
         }
       }
 

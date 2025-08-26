@@ -66,7 +66,7 @@ export class DatabaseStorage implements IStorage {
 
   // Club sanctions methods
   async getClubSanctions(): Promise<ClubSanction[]> {
-    return await db.select().from(clubSanctions).orderBy(desc(clubSanctions.fechaCreacion));
+    return await db.select().from(clubSanctions).orderBy(desc(clubSanctions.numeroCarga));
   }
 
   async getClubSanction(id: string): Promise<ClubSanction | undefined> {
@@ -113,7 +113,7 @@ export class DatabaseStorage implements IStorage {
 
   // Personal sanctions methods
   async getPersonalSanctions(): Promise<PersonalSanction[]> {
-    return await db.select().from(personalSanctions).orderBy(desc(personalSanctions.fechaCreacion));
+    return await db.select().from(personalSanctions).orderBy(desc(personalSanctions.numeroCarga));
   }
 
   async getPersonalSanction(id: string): Promise<PersonalSanction | undefined> {
@@ -172,7 +172,7 @@ export class DatabaseStorage implements IStorage {
           eq(personalSanctions.reportadaEnPdf, false)
         )
       )
-      .orderBy(desc(personalSanctions.fechaCreacion));
+      .orderBy(desc(personalSanctions.numeroCarga));
   }
 
   async markPersonalSanctionsAsReported(sanctionIds: string[]): Promise<void> {
