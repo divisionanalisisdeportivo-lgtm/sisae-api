@@ -44,8 +44,18 @@ export class BackupService {
 
     // Use Argentina timezone (UTC-3) with proper formatting
     const now = new Date();
-    const argentinaTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Argentina/Cordoba"}));
-    const timestamp = argentinaTime.toISOString().slice(0, 19) + '-03:00';
+    const options = {
+      timeZone: 'America/Argentina/Cordoba',
+      year: 'numeric' as const,
+      month: '2-digit' as const, 
+      day: '2-digit' as const,
+      hour: '2-digit' as const,
+      minute: '2-digit' as const,
+      second: '2-digit' as const,
+      hour12: false
+    };
+    const argentinaTimeString = now.toLocaleString('sv-SE', options);
+    const timestamp = argentinaTimeString.replace(' ', 'T') + '-03:00';
     
     const clubSanctions = await storage.getClubSanctions();
     const personalSanctions = await storage.getPersonalSanctions();
