@@ -42,7 +42,11 @@ export class BackupService {
   async createBackup(): Promise<string> {
     await this.ensureBackupDirectory();
 
-    const timestamp = new Date().toISOString();
+    // Use Argentina timezone (UTC-3) with proper formatting
+    const now = new Date();
+    const argentinaTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Argentina/Cordoba"}));
+    const timestamp = argentinaTime.toISOString().slice(0, 19) + '-03:00';
+    
     const clubSanctions = await storage.getClubSanctions();
     const personalSanctions = await storage.getPersonalSanctions();
     const users = await storage.getAllUsers();
