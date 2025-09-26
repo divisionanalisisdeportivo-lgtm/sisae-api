@@ -1,0 +1,184 @@
+{
+  "timestamp": "2025-08-26T18:20:20-03:00",
+  "version": "1.0",
+  "clubSanctions": [
+    {
+      "id": "0efd18a4-fed6-432c-bab9-ac128355c0d3",
+      "numeroCarga": 3,
+      "nombreSancionado": "Club Deportivo Ejemplo 3",
+      "deporte": "fútbol",
+      "ubicacion": "Río Cuarto",
+      "tipoSancion": "otras",
+      "motivoSancion": [
+        "incumplimiento normativo"
+      ],
+      "fechaInicio": "2025-01-03",
+      "fechaFin": "2025-01-17",
+      "observaciones": "Tercera sanción de prueba",
+      "actaPdf": null,
+      "fechaCreacion": "2025-08-26T20:55:19.575Z"
+    },
+    {
+      "id": "b636bab2-5d1f-466e-a78f-2c1bd3cd08ab",
+      "numeroCarga": 2,
+      "nombreSancionado": "Club Deportivo Ejemplo 2",
+      "deporte": "básquet",
+      "ubicacion": "Villa Carlos Paz",
+      "tipoSancion": "sanciones económicas",
+      "motivoSancion": [
+        "conducta inapropiada"
+      ],
+      "fechaInicio": "2025-01-02",
+      "fechaFin": "2025-01-16",
+      "observaciones": "Segunda sanción de prueba",
+      "actaPdf": null,
+      "fechaCreacion": "2025-08-26T20:55:19.575Z"
+    },
+    {
+      "id": "64d40da7-1a75-45cd-abd8-4280cf58294f",
+      "numeroCarga": 1,
+      "nombreSancionado": "Club Deportivo Ejemplo 1",
+      "deporte": "fútbol",
+      "ubicacion": "Córdoba Capital",
+      "tipoSancion": "clausura del estadio",
+      "motivoSancion": [
+        "incumplimiento normativo"
+      ],
+      "fechaInicio": "2025-01-01",
+      "fechaFin": "2025-01-15",
+      "observaciones": "Primera sanción de prueba",
+      "actaPdf": null,
+      "fechaCreacion": "2025-08-26T20:55:19.575Z"
+    }
+  ],
+  "personalSanctions": [
+    {
+      "id": "27c9909d-f953-4db9-9b12-d2c31af2c725",
+      "numeroCarga": 6,
+      "nombrePersona": "Tribuna Segura Persona 3",
+      "dniPersona": "77777777",
+      "edadPersona": 35,
+      "deporte": "básquet",
+      "ubicacion": "Río Cuarto",
+      "motivoSancion": "agresión física",
+      "fechaInicio": "2025-01-06",
+      "fechaFin": "2025-01-20",
+      "observaciones": "Sanción tribuna segura 3",
+      "actaPdf": null,
+      "reportadaEnPdf": false,
+      "fechaCreacion": "2025-08-26T20:57:49.268Z"
+    },
+    {
+      "id": "6f83d66c-3251-4f28-871e-011b0e3d24fa",
+      "numeroCarga": 5,
+      "nombrePersona": "Tribuna Segura Persona 2",
+      "dniPersona": "66666666",
+      "edadPersona": 27,
+      "deporte": "fútbol",
+      "ubicacion": "Villa María",
+      "motivoSancion": "uso de pirotecnia",
+      "fechaInicio": "2025-01-05",
+      "fechaFin": "2025-01-19",
+      "observaciones": "Sanción tribuna segura 2",
+      "actaPdf": null,
+      "reportadaEnPdf": false,
+      "fechaCreacion": "2025-08-26T20:57:49.268Z"
+    },
+    {
+      "id": "696c6256-7e9f-4bd3-8991-3795829ed054",
+      "numeroCarga": 4,
+      "nombrePersona": "Tribuna Segura Persona 1",
+      "dniPersona": "55555555",
+      "edadPersona": 32,
+      "deporte": "fútbol",
+      "ubicacion": "Córdoba Capital",
+      "motivoSancion": "conducta violenta",
+      "fechaInicio": "2025-01-04",
+      "fechaFin": "2025-01-18",
+      "observaciones": "Sanción tribuna segura 1",
+      "actaPdf": null,
+      "reportadaEnPdf": false,
+      "fechaCreacion": "2025-08-26T20:57:49.268Z"
+    },
+    {
+      "id": "9b4c6d7f-b099-460f-b719-4d77f36a754c",
+      "numeroCarga": 3,
+      "nombrePersona": "Carlos López",
+      "dniPersona": "11223344",
+      "edadPersona": 28,
+      "deporte": "fútbol",
+      "ubicacion": "Río Cuarto",
+      "motivoSancion": "uso de pirotecnia",
+      "fechaInicio": "2025-01-03",
+      "fechaFin": "2025-01-17",
+      "observaciones": "Tercera sanción personal de prueba",
+      "actaPdf": null,
+      "reportadaEnPdf": false,
+      "fechaCreacion": "2025-08-26T20:55:27.573Z"
+    },
+    {
+      "id": "395fc963-cee9-4411-87fa-484daf6916af",
+      "numeroCarga": 2,
+      "nombrePersona": "María González",
+      "dniPersona": "87654321",
+      "edadPersona": 30,
+      "deporte": "básquet",
+      "ubicacion": "Villa Carlos Paz",
+      "motivoSancion": "agresión física",
+      "fechaInicio": "2025-01-02",
+      "fechaFin": "2025-01-16",
+      "observaciones": "Segunda sanción personal de prueba",
+      "actaPdf": null,
+      "reportadaEnPdf": false,
+      "fechaCreacion": "2025-08-26T20:55:27.573Z"
+    },
+    {
+      "id": "dc7ffdca-361d-48a0-b4c9-07eb8ae66c92",
+      "numeroCarga": 1,
+      "nombrePersona": "Juan Pérez",
+      "dniPersona": "12345678",
+      "edadPersona": 25,
+      "deporte": "fútbol",
+      "ubicacion": "Córdoba Capital",
+      "motivoSancion": "conducta inapropiada",
+      "fechaInicio": "2025-01-01",
+      "fechaFin": "2025-01-15",
+      "observaciones": "Primera sanción personal de prueba",
+      "actaPdf": null,
+      "reportadaEnPdf": false,
+      "fechaCreacion": "2025-08-26T20:55:27.573Z"
+    }
+  ],
+  "users": [
+    {
+      "id": "e6da0e73-7979-495a-9ae7-0de368283364",
+      "username": "lautarotorres",
+      "password": "[REDACTED]",
+      "role": "admin",
+      "isActive": true,
+      "temporaryAccess": false,
+      "accessExpires": null,
+      "lastLogin": "2025-08-26T20:55:29.822Z",
+      "createdAt": "2025-08-22T15:10:17.936Z",
+      "createdBy": null
+    },
+    {
+      "id": "c27ddf58-d0e6-4c3f-a50f-5b2110d1cd18",
+      "username": "pablocisterna",
+      "password": "[REDACTED]",
+      "role": "user",
+      "isActive": true,
+      "temporaryAccess": true,
+      "accessExpires": "2026-02-08T15:17:00.000Z",
+      "lastLogin": null,
+      "createdAt": "2025-08-22T15:18:13.222Z",
+      "createdBy": "e6da0e73-7979-495a-9ae7-0de368283364"
+    }
+  ],
+  "statistics": {
+    "totalClubSanctions": 3,
+    "totalPersonalSanctions": 6,
+    "totalUsers": 2,
+    "backupDate": "2025-08-26T18:20:20-03:00"
+  }
+}
