@@ -70,6 +70,17 @@ async function writeData(data) {
     }
 }
 
+// Whitelist de campos permitidos para evitar inyección de propiedades
+function pickAllowedFields(body, allowedFields) {
+    const filtered = {};
+    for (const field of allowedFields) {
+        if (field in body) {
+            filtered[field] = body[field];
+        }
+    }
+    return filtered;
+}
+
 // Rutas API
 app.get('/api/ping', (req, res) => {
     res.json({
@@ -107,9 +118,12 @@ app.get('/api/personas', async (req, res) => {
 app.post('/api/sanciones', async (req, res) => {
     try {
         const data = await readData();
+        const allowedFields = ['numeroCarga', 'nombreSancionado', 'deporte', 'ubicacion', 
+                               'tipoSancion', 'motivoSancion', 'fechaInicio', 'fechaFin', 
+                               'observaciones', 'actaPdf'];
         const nuevaSancion = {
             id: Date.now().toString() + '_' + Math.random().toString(36).substr(2, 9),
-            ...req.body,
+            ...pickAllowedFields(req.body, allowedFields),
             fechaCreacion: new Date().toISOString()
         };
 
@@ -142,9 +156,12 @@ app.put('/api/sanciones/:id', async (req, res) => {
             return res.status(404).json({ error: 'Sanción no encontrada' });
         }
 
+        const allowedFields = ['numeroCarga', 'nombreSancionado', 'deporte', 'ubicacion', 
+                               'tipoSancion', 'motivoSancion', 'fechaInicio', 'fechaFin', 
+                               'observaciones', 'actaPdf'];
         data.sanciones[index] = {
             ...data.sanciones[index],
-            ...req.body,
+            ...pickAllowedFields(req.body, allowedFields),
             fechaModificacion: new Date().toISOString()
         };
 
@@ -185,9 +202,12 @@ app.delete('/api/sanciones/:id', async (req, res) => {
 app.post('/api/personas', async (req, res) => {
     try {
         const data = await readData();
+        const allowedFields = ['numeroCarga', 'nombrePersona', 'dniPersona', 'edadPersona', 
+                               'deporte', 'ubicacion', 'motivoSancion', 'fechaInicio', 'fechaFin', 
+                               'observaciones', 'actaPdf', 'reportadaEnPdf'];
         const nuevaPersona = {
             id: Date.now().toString() + '_' + Math.random().toString(36).substr(2, 9),
-            ...req.body,
+            ...pickAllowedFields(req.body, allowedFields),
             fechaCreacion: new Date().toISOString()
         };
 
