@@ -449,12 +449,19 @@ function mostrarNotificacion(mensaje, tipo = 'info') {
         notif.classList.add('bg-blue-600');
     }
     
-    notif.innerHTML = `
-        <div class="flex items-center gap-2">
-            <i class="fas fa-${tipo === 'success' ? 'check' : tipo === 'error' ? 'exclamation-triangle' : 'info'}-circle"></i>
-            <span>${mensaje}</span>
-        </div>
-    `;
+    // Safe DOM construction to prevent XSS
+    const container = document.createElement('div');
+    container.className = 'flex items-center gap-2';
+    
+    const icon = document.createElement('i');
+    icon.className = `fas fa-${tipo === 'success' ? 'check' : tipo === 'error' ? 'exclamation-triangle' : 'info'}-circle`;
+    
+    const messageSpan = document.createElement('span');
+    messageSpan.textContent = mensaje; // Safe: textContent auto-escapes
+    
+    container.appendChild(icon);
+    container.appendChild(messageSpan);
+    notif.appendChild(container);
     
     document.body.appendChild(notif);
     
