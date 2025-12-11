@@ -1,9 +1,9 @@
 {
-  "timestamp": "2025-08-26T20:59:42.007Z",
+  "timestamp": "2025-10-14T19:56:33-03:00",
   "version": "1.0",
   "clubSanctions": [
     {
-      "id": "0efd18a4-fed6-432c-bab9-ac128355c0d3",
+      "id": "828b6749-f7e7-4a3d-b4fd-f6f0746bd2ff",
       "numeroCarga": 3,
       "nombreSancionado": "Club Deportivo Ejemplo 3",
       "deporte": "fútbol",
@@ -15,11 +15,11 @@
       "fechaInicio": "2025-01-03",
       "fechaFin": "2025-01-17",
       "observaciones": "Tercera sanción de prueba",
-      "actaPdf": null,
-      "fechaCreacion": "2025-08-26T20:55:19.575Z"
+      "actaPdf": "",
+      "fechaCreacion": "2025-08-26T21:20:21.001Z"
     },
     {
-      "id": "b636bab2-5d1f-466e-a78f-2c1bd3cd08ab",
+      "id": "3d829fa3-f798-4a90-87bf-d5201d59f780",
       "numeroCarga": 2,
       "nombreSancionado": "Club Deportivo Ejemplo 2",
       "deporte": "básquet",
@@ -31,11 +31,11 @@
       "fechaInicio": "2025-01-02",
       "fechaFin": "2025-01-16",
       "observaciones": "Segunda sanción de prueba",
-      "actaPdf": null,
-      "fechaCreacion": "2025-08-26T20:55:19.575Z"
+      "actaPdf": "",
+      "fechaCreacion": "2025-08-26T21:20:20.969Z"
     },
     {
-      "id": "64d40da7-1a75-45cd-abd8-4280cf58294f",
+      "id": "9afaaf38-2f04-4f92-9b3a-124a0b52c1b6",
       "numeroCarga": 1,
       "nombreSancionado": "Club Deportivo Ejemplo 1",
       "deporte": "fútbol",
@@ -47,13 +47,13 @@
       "fechaInicio": "2025-01-01",
       "fechaFin": "2025-01-15",
       "observaciones": "Primera sanción de prueba",
-      "actaPdf": null,
-      "fechaCreacion": "2025-08-26T20:55:19.575Z"
+      "actaPdf": "",
+      "fechaCreacion": "2025-08-26T21:20:20.926Z"
     }
   ],
   "personalSanctions": [
     {
-      "id": "27c9909d-f953-4db9-9b12-d2c31af2c725",
+      "id": "216252da-3835-4db7-8982-ab5828d379ec",
       "numeroCarga": 6,
       "nombrePersona": "Tribuna Segura Persona 3",
       "dniPersona": "77777777",
@@ -64,12 +64,12 @@
       "fechaInicio": "2025-01-06",
       "fechaFin": "2025-01-20",
       "observaciones": "Sanción tribuna segura 3",
-      "actaPdf": null,
+      "actaPdf": "",
       "reportadaEnPdf": false,
-      "fechaCreacion": "2025-08-26T20:57:49.268Z"
+      "fechaCreacion": "2025-08-26T21:20:21.199Z"
     },
     {
-      "id": "6f83d66c-3251-4f28-871e-011b0e3d24fa",
+      "id": "eede807f-6a16-47fb-99b3-57a122be492d",
       "numeroCarga": 5,
       "nombrePersona": "Tribuna Segura Persona 2",
       "dniPersona": "66666666",
@@ -80,12 +80,12 @@
       "fechaInicio": "2025-01-05",
       "fechaFin": "2025-01-19",
       "observaciones": "Sanción tribuna segura 2",
-      "actaPdf": null,
+      "actaPdf": "",
       "reportadaEnPdf": false,
-      "fechaCreacion": "2025-08-26T20:57:49.268Z"
+      "fechaCreacion": "2025-08-26T21:20:21.166Z"
     },
     {
-      "id": "696c6256-7e9f-4bd3-8991-3795829ed054",
+      "id": "4de85e74-f578-4bbd-8e8b-569ee2b4514a",
       "numeroCarga": 4,
       "nombrePersona": "Tribuna Segura Persona 1",
       "dniPersona": "55555555",
@@ -96,12 +96,12 @@
       "fechaInicio": "2025-01-04",
       "fechaFin": "2025-01-18",
       "observaciones": "Sanción tribuna segura 1",
-      "actaPdf": null,
+      "actaPdf": "",
       "reportadaEnPdf": false,
-      "fechaCreacion": "2025-08-26T20:57:49.268Z"
+      "fechaCreacion": "2025-08-26T21:20:21.133Z"
     },
     {
-      "id": "9b4c6d7f-b099-460f-b719-4d77f36a754c",
+      "id": "04a5e112-9e7d-4deb-bf27-9f24f180ae5d",
       "numeroCarga": 3,
       "nombrePersona": "Carlos López",
       "dniPersona": "11223344",
@@ -112,12 +112,12 @@
       "fechaInicio": "2025-01-03",
       "fechaFin": "2025-01-17",
       "observaciones": "Tercera sanción personal de prueba",
-      "actaPdf": null,
+      "actaPdf": "",
       "reportadaEnPdf": false,
-      "fechaCreacion": "2025-08-26T20:55:27.573Z"
+      "fechaCreacion": "2025-08-26T21:20:21.100Z"
     },
     {
-      "id": "395fc963-cee9-4411-87fa-484daf6916af",
+      "id": "71912b17-a9e1-4cce-a6ac-845d6cf3f67d",
       "numeroCarga": 2,
       "nombrePersona": "María González",
       "dniPersona": "87654321",
@@ -128,12 +128,12 @@
       "fechaInicio": "2025-01-02",
       "fechaFin": "2025-01-16",
       "observaciones": "Segunda sanción personal de prueba",
-      "actaPdf": null,
+      "actaPdf": "",
       "reportadaEnPdf": false,
-      "fechaCreacion": "2025-08-26T20:55:27.573Z"
+      "fechaCreacion": "2025-08-26T21:20:21.068Z"
     },
     {
-      "id": "dc7ffdca-361d-48a0-b4c9-07eb8ae66c92",
+      "id": "bee5613a-67ca-43eb-8ce9-4a64726979cc",
       "numeroCarga": 1,
       "nombrePersona": "Juan Pérez",
       "dniPersona": "12345678",
@@ -144,9 +144,9 @@
       "fechaInicio": "2025-01-01",
       "fechaFin": "2025-01-15",
       "observaciones": "Primera sanción personal de prueba",
-      "actaPdf": null,
+      "actaPdf": "",
       "reportadaEnPdf": false,
-      "fechaCreacion": "2025-08-26T20:55:27.573Z"
+      "fechaCreacion": "2025-08-26T21:20:21.034Z"
     }
   ],
   "users": [
@@ -179,6 +179,6 @@
     "totalClubSanctions": 3,
     "totalPersonalSanctions": 6,
     "totalUsers": 2,
-    "backupDate": "2025-08-26T20:59:42.007Z"
+    "backupDate": "2025-10-14T19:56:33-03:00"
   }
 }
