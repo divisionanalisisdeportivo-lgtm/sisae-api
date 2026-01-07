@@ -1,0 +1,56 @@
+================================================================================
+              SISTEMA SISAE - GUÍA PARA XAMPP / LOCALHOST
+================================================================================
+
+XAMPP se usa principalmente para PHP/MySQL. Este proyecto usa Node.js y PostgreSQL,
+pero puedes usar el Panel de Control de XAMPP para gestionar PostgreSQL si lo 
+tienes configurado, aunque lo más común es usar Node.js directamente.
+
+REQUISITOS EN TU PC:
+-------------------
+1. Node.js (https://nodejs.org) - ESENCIAL
+2. PostgreSQL (https://www.postgresql.org) - ESENCIAL
+   (Nota: XAMPP no incluye PostgreSQL por defecto, incluye MySQL)
+
+================================================================================
+PASOS PARA LOCALHOST:
+================================================================================
+
+1. INSTALACIÓN DE HERRAMIENTAS:
+   - Descarga e instala Node.js.
+   - Descarga e instala PostgreSQL.
+
+2. CONFIGURAR LA BASE DE DATOS:
+   - Abre "pgAdmin 4" (viene con PostgreSQL).
+   - Crea una base de datos llamada: sisae_db
+
+3. PREPARAR EL PROYECTO:
+   - Descomprime el archivo sisae_localhost.tar.gz en una carpeta (ej: C:\sisae).
+   - Abre una terminal (CMD o PowerShell) en esa carpeta.
+
+4. CONFIGURAR VARIABLES (.env):
+   - Crea un archivo ".env" y pega esto:
+     DATABASE_URL=postgresql://postgres:TU_PASSWORD@localhost:5432/sisae_db
+     SESSION_SECRET=clave-secreta-sisae
+   - Reemplaza TU_PASSWORD por la que pusiste al instalar PostgreSQL.
+
+5. INSTALAR Y EJECUTAR:
+   Ejecuta estos comandos en la terminal uno por uno:
+   
+   npm install        (Instala las librerías)
+   npm run db:push    (Crea las tablas)
+   npm run dev        (Inicia el sistema)
+
+6. ABRIR EL SISTEMA:
+   Ve a http://localhost:5000 en tu navegador.
+
+================================================================================
+¿POR QUÉ NO MYSQL/XAMPP DIRECTO?
+================================================================================
+Este sistema utiliza PostgreSQL por su robustez y manejo de datos complejos. 
+XAMPP es excelente para Apache/PHP, pero para este sistema moderno basado en 
+JavaScript (Node.js), el motor de ejecución es Node.js.
+
+Si ya tienes XAMPP instalado, no hay problema, pueden convivir perfectamente.
+Solo asegúrate de instalar PostgreSQL por separado.
+================================================================================
