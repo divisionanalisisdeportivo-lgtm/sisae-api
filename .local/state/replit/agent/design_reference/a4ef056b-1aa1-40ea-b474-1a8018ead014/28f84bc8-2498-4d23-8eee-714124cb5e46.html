@@ -1,0 +1,562 @@
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISAE - Sistema de Sanciones y Estadísticas</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'sisae-blue': {
+                        50: '#eff6ff',
+                        500: '#3b82f6',
+                        600: '#2563eb',
+                        700: '#1d4ed8',
+                        800: '#1e40af',
+                        900: '#1e3a8a'
+                    }
+                },
+                backdropBlur: {
+                    'xs': '2px',
+                }
+            }
+        }
+    };
+    </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-900 via-blue-700 to-indigo-800 text-gray-100">
+    
+    <!-- @COMPONENT: Header [sticky navigation with glassmorphism effect] -->
+    <header class="bg-white/10 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <!-- Sistema logo placeholder -->
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full border-2 border-white/30 flex items-center justify-center">
+                        <i class="fas fa-gavel text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-white">SISAE</h1>
+                        <p class="text-blue-100 text-sm">Sistema Integral de Sanciones Deportivas</p>
+                    </div>
+                </div>
+                
+                <div data-mock="true" class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-green-500/20 backdrop-blur-sm border border-green-400/30">
+                    <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span class="text-green-100 text-sm font-medium">Conectado</span>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- @END_COMPONENT: Header -->
+
+    <!-- @COMPONENT: MainContent [primary dashboard and management interface] -->
+    <main class="container mx-auto px-4 py-8">
+        
+        <!-- @COMPONENT: DashboardCards [statistics overview with real-time counters] -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-blue-100 text-sm">Total Sanciones Clubes</p>
+                        <p data-bind="sanciones.length" class="text-3xl font-bold text-white">145</p>
+                    </div>
+                    <i class="fas fa-users text-blue-300 text-2xl"></i>
+                </div>
+            </div>
+            
+            <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-blue-100 text-sm">Sanciones Personales</p>
+                        <p data-bind="personas.length" class="text-3xl font-bold text-white">89</p>
+                    </div>
+                    <i class="fas fa-user text-blue-300 text-2xl"></i>
+                </div>
+            </div>
+            
+            <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-blue-100 text-sm">Activas</p>
+                        <p data-bind="activeSanctions.length" class="text-3xl font-bold text-green-400">67</p>
+                    </div>
+                    <i class="fas fa-exclamation-triangle text-green-400 text-2xl"></i>
+                </div>
+            </div>
+            
+            <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-blue-100 text-sm">Vencidas</p>
+                        <p data-bind="expiredSanctions.length" class="text-3xl font-bold text-gray-400">167</p>
+                    </div>
+                    <i class="fas fa-check-circle text-gray-400 text-2xl"></i>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: DashboardCards -->
+
+        <!-- @COMPONENT: ActionButtons [primary action controls] -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <button data-event="click:openClubSanctionModal" class="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg">
+                <i class="fas fa-plus mr-2"></i>Nueva Sanción Club
+            </button>
+            
+            <button data-event="click:openPersonalSanctionModal" class="bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg">
+                <i class="fas fa-user-plus mr-2"></i>Nueva Sanción Personal
+            </button>
+            
+            <button data-event="click:exportPDF" class="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg">
+                <i class="fas fa-file-pdf mr-2"></i>Exportar PDF
+            </button>
+        </div>
+        <!-- @END_COMPONENT: ActionButtons -->
+
+        <!-- @COMPONENT: FiltersSection [advanced filtering and search controls] -->
+        <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 mb-8">
+            <h3 class="text-xl font-bold text-white mb-4">
+                <i class="fas fa-filter mr-2"></i>Filtros
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-blue-100 mb-2">Buscar</label>
+                    <input type="text" data-mock="true" placeholder="Nombre, deporte, ubicación..." 
+                           class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80 text-gray-800 placeholder-gray-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-blue-100 mb-2">Deporte</label>
+                    <select data-mock="true" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80 text-gray-800">
+                        <option value="">Todos los deportes</option>
+                        <option value="Fútbol">Fútbol</option>
+                        <option value="Básquetbol">Básquetbol</option>
+                        <option value="Voleibol">Voleibol</option>
+                        <option value="Rugby">Rugby</option>
+                        <option value="Hockey">Hockey</option>
+                        <option value="Tenis">Tenis</option>
+                        <option value="Natación">Natación</option>
+                        <option value="Atletismo">Atletismo</option>
+                        <option value="Boxeo">Boxeo</option>
+                        <option value="Karate">Karate</option>
+                        <option value="Judo">Judo</option>
+                        <option value="Taekwondo">Taekwondo</option>
+                        <option value="Paddle">Paddle</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-blue-100 mb-2">Estado</label>
+                    <select data-mock="true" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white/80 text-gray-800">
+                        <option value="">Todos</option>
+                        <option value="activa">Activas</option>
+                        <option value="vencida">Vencidas</option>
+                    </select>
+                </div>
+                
+                <div class="flex items-end">
+                    <button data-event="click:clearFilters" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-lg transition-colors">
+                        <i class="fas fa-broom mr-2"></i>Limpiar
+                    </button>
+                </div>
+            </div>
+            
+            <div class="mt-4 text-center">
+                <span data-bind="filteredResults.length" data-mock="true" class="text-blue-100 font-medium">234 resultados</span>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: FiltersSection -->
+
+        <!-- @COMPONENT: SanctionsList [comprehensive sanctions display] -->
+        <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-white">
+                    <i class="fas fa-list mr-2"></i>Todas las Sanciones
+                </h3>
+                <button data-event="click:refreshData" class="text-blue-300 hover:text-blue-100 transition-colors">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+            
+            <!-- @MAP: sanctions.map(sanction => ( -->
+            <div class="space-y-4">
+                <!-- Sample sanction card -->
+                <div data-mock="true" class="bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/20 hover:shadow-xl transition-all duration-300">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <h3 class="text-lg font-bold text-gray-800">Club Atlético Belgrano</h3>
+                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">Club</span>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                <div>
+                                    <p class="text-gray-600"><i class="fas fa-futbol mr-2 text-blue-500"></i><strong>Deporte:</strong> Fútbol</p>
+                                    <p class="text-gray-600"><i class="fas fa-map-marker-alt mr-2 text-red-500"></i><strong>Ubicación:</strong> Capital</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600"><i class="fas fa-calendar mr-2 text-blue-500"></i><strong>Inicio:</strong> 15/01/2024</p>
+                                    <p class="text-gray-600"><i class="fas fa-calendar-check mr-2 text-green-500"></i><strong>Fin:</strong> 15/03/2024</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600"><i class="fas fa-gavel mr-2 text-orange-500"></i><strong>Tipo:</strong> Suspensión</p>
+                                    <p class="text-gray-600"><i class="fas fa-clock mr-2 text-gray-500"></i><strong>Días restantes:</strong> 45</p>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-3 p-3 bg-gray-50 rounded-lg">
+                                <p class="text-sm text-gray-700"><i class="fas fa-sticky-note mr-2"></i>Incidentes durante el partido contra Talleres - Fecha 15</p>
+                            </div>
+                        </div>
+                        
+                        <div class="ml-4 flex flex-col items-end gap-2">
+                            <span class="px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">Activa</span>
+                            <div class="flex gap-2">
+                                <button data-event="click:editSanction" class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button data-event="click:deleteSanction" class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sample personal sanction -->
+                <div data-mock="true" class="bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/20 hover:shadow-xl transition-all duration-300">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <h3 class="text-lg font-bold text-gray-800">Juan Carlos Rodríguez</h3>
+                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-800">Personal</span>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                <div>
+                                    <p class="text-gray-600"><i class="fas fa-futbol mr-2 text-blue-500"></i><strong>Deporte:</strong> Básquetbol</p>
+                                    <p class="text-gray-600"><i class="fas fa-id-card mr-2 text-green-500"></i><strong>DNI:</strong> 12.345.678</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600"><i class="fas fa-calendar mr-2 text-blue-500"></i><strong>Inicio:</strong> 10/12/2023</p>
+                                    <p class="text-gray-600"><i class="fas fa-calendar-check mr-2 text-green-500"></i><strong>Fin:</strong> 10/01/2024</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600"><i class="fas fa-birthday-cake mr-2 text-pink-500"></i><strong>Edad:</strong> 34 años</p>
+                                    <p class="text-gray-600"><i class="fas fa-clock mr-2 text-gray-500"></i><strong>Estado:</strong> Vencida</p>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-3 p-3 bg-gray-50 rounded-lg">
+                                <p class="text-sm text-gray-700"><i class="fas fa-sticky-note mr-2"></i>Conducta antideportiva en tribuna - Estadio Mario A. Kempes</p>
+                            </div>
+                        </div>
+                        
+                        <div class="ml-4 flex flex-col items-end gap-2">
+                            <span class="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">Vencida</span>
+                            <div class="flex gap-2">
+                                <button data-event="click:editSanction" class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button data-event="click:deleteSanction" class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- More sanctions would be displayed here -->
+                <div data-mock="true" class="bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/20 hover:shadow-xl transition-all duration-300">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <h3 class="text-lg font-bold text-gray-800">Instituto Atlético Central Córdoba</h3>
+                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">Club</span>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                <div>
+                                    <p class="text-gray-600"><i class="fas fa-running mr-2 text-blue-500"></i><strong>Deporte:</strong> Atletismo</p>
+                                    <p class="text-gray-600"><i class="fas fa-map-marker-alt mr-2 text-red-500"></i><strong>Ubicación:</strong> Capital</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600"><i class="fas fa-calendar mr-2 text-blue-500"></i><strong>Inicio:</strong> 20/11/2023</p>
+                                    <p class="text-gray-600"><i class="fas fa-calendar-check mr-2 text-green-500"></i><strong>Fin:</strong> 20/12/2023</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600"><i class="fas fa-gavel mr-2 text-orange-500"></i><strong>Tipo:</strong> Multa</p>
+                                    <p class="text-gray-600"><i class="fas fa-clock mr-2 text-gray-500"></i><strong>Estado:</strong> Vencida</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="ml-4 flex flex-col items-end gap-2">
+                            <span class="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">Vencida</span>
+                            <div class="flex gap-2">
+                                <button data-event="click:editSanction" class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button data-event="click:deleteSanction" class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- @END_MAP )) -->
+        </div>
+        <!-- @END_COMPONENT: SanctionsList -->
+    </main>
+    <!-- @END_COMPONENT: MainContent -->
+
+    <!-- @COMPONENT: ClubSanctionModal [modal for adding/editing club sanctions] -->
+    <div id="modalSancionClub" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Nueva Sanción Club</h2>
+                <button data-event="click:closeModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form data-event="submit:saveClubSanction">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Nombre del Sancionado *</label>
+                        <input type="text" data-mock="true" required 
+                               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Deporte *</label>
+                        <select data-mock="true" required 
+                                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
+                            <option value="">Seleccionar deporte</option>
+                            <option value="Fútbol">Fútbol</option>
+                            <option value="Básquetbol">Básquetbol</option>
+                            <option value="Voleibol">Voleibol</option>
+                            <option value="Rugby">Rugby</option>
+                            <option value="Hockey">Hockey</option>
+                            <option value="Tenis">Tenis</option>
+                            <option value="Natación">Natación</option>
+                            <option value="Atletismo">Atletismo</option>
+                            <option value="Boxeo">Boxeo</option>
+                            <option value="Karate">Karate</option>
+                            <option value="Paddle">Paddle</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Ubicación *</label>
+                        <select data-mock="true" required 
+                                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
+                            <option value="">Seleccionar ubicación</option>
+                            <option value="Capital">Capital</option>
+                            <option value="Interior">Interior</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Tipo de Sanción *</label>
+                        <select data-mock="true" required 
+                                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
+                            <option value="">Seleccionar tipo</option>
+                            <option value="Suspensión">Suspensión</option>
+                            <option value="Multa">Multa</option>
+                            <option value="Amonestación">Amonestación</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Fecha Inicio *</label>
+                        <input type="date" data-mock="true" required 
+                               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Fecha Fin *</label>
+                        <input type="date" data-mock="true" required 
+                               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Observaciones</label>
+                    <textarea data-mock="true" rows="3" 
+                              class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white"></textarea>
+                </div>
+                
+                <div class="flex gap-4">
+                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
+                        <i class="fas fa-save mr-2"></i>Guardar Sanción
+                    </button>
+                    <button type="button" data-event="click:closeModal" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
+                        <i class="fas fa-times mr-2"></i>Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: ClubSanctionModal -->
+
+    <!-- @COMPONENT: PersonalSanctionModal [modal for adding/editing personal sanctions] -->
+    <div id="modalSancionPersonal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Nueva Sanción Personal - Tribuna Segura</h2>
+                <button data-event="click:closeModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form data-event="submit:savePersonalSanction">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Nombre y Apellido *</label>
+                        <input type="text" data-mock="true" required 
+                               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">DNI *</label>
+                        <input type="text" data-mock="true" required placeholder="12.345.678"
+                               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Edad *</label>
+                        <input type="number" data-mock="true" required min="16" max="99"
+                               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Deporte *</label>
+                        <select data-mock="true" required 
+                                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
+                            <option value="">Seleccionar deporte</option>
+                            <option value="Fútbol">Fútbol</option>
+                            <option value="Básquetbol">Básquetbol</option>
+                            <option value="Voleibol">Voleibol</option>
+                            <option value="Rugby">Rugby</option>
+                            <option value="Hockey">Hockey</option>
+                            <option value="Tenis">Tenis</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Fecha Inicio *</label>
+                        <input type="date" data-mock="true" required 
+                               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Fecha Fin *</label>
+                        <input type="date" data-mock="true" required 
+                               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Motivo de la Sanción</label>
+                    <textarea data-mock="true" rows="3" placeholder="Describir el motivo de la sanción..."
+                              class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white"></textarea>
+                </div>
+                
+                <div class="flex gap-4">
+                    <button type="submit" class="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
+                        <i class="fas fa-save mr-2"></i>Guardar Sanción Personal
+                    </button>
+                    <button type="button" data-event="click:closeModal" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
+                        <i class="fas fa-times mr-2"></i>Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: PersonalSanctionModal -->
+
+    <!-- @STATE: isModalOpen:boolean = false -->
+    <!-- @STATE: sanctions:array = [] -->
+    <!-- @STATE: personas:array = [] -->
+    <!-- @STATE: filters:object = {search: '', sport: '', status: ''} -->
+
+    <script>
+        (() => {
+            // TODO: Implement state management for sanctions and personas
+            let sanctions = [
+                {id: '1', type: 'club', nombreSancionado: 'Club Atlético Belgrano', deporte: 'Fútbol', ubicacion: 'Capital'},
+                {id: '2', type: 'personal', nombrePersona: 'Juan Carlos Rodríguez', deporte: 'Básquetbol', dniPersona: '12.345.678'}
+            ];
+            
+            let personas = [];
+            let currentFilters = {search: '', sport: '', status: ''};
+            
+            // Modal management
+            function openModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                }
+            }
+            
+            function closeModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }
+            }
+            
+            // TODO: Implement API calls for CRUD operations
+            // TODO: Implement real-time filtering functionality
+            // TODO: Implement PDF export functionality
+            // TODO: Implement form validation and submission
+            // TODO: Implement data persistence and sync
+            
+            // Event listeners setup
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('🚀 SISAE System Initialized');
+                
+                // TODO: Load initial data from API
+                // TODO: Setup real-time status monitoring
+                // TODO: Initialize filter handlers
+                
+                // Close modals when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('bg-black')) {
+                        const modals = document.querySelectorAll('[id*="modal"]');
+                        modals.forEach(modal => {
+                            modal.classList.add('hidden');
+                            modal.classList.remove('flex');
+                        });
+                    }
+                });
+            });
+            
+            // Global functions for button events
+            window.openClubSanctionModal = () => openModal('modalSancionClub');
+            window.openPersonalSanctionModal = () => openModal('modalSancionPersonal');
+            window.closeModal = (modalId) => closeModal(modalId || 'modalSancionClub');
+            
+            // TODO: Implement additional event handlers
+            // TODO: Implement form submission logic
+            // TODO: Implement data validation
+            // TODO: Implement error handling and user feedback
+        })();
+    </script>
+
+    <!-- @FUNCTIONALITY: This system should implement full CRUD operations for sanctions management -->
+    <!-- @FUNCTIONALITY: Real-time filtering and search capabilities across all sanctions -->
+    <!-- @FUNCTIONALITY: PDF export functionality with official formatting -->
+    <!-- @FUNCTIONALITY: State management for active/expired sanctions calculation -->
+    <!-- @FUNCTIONALITY: Form validation and error handling -->
+    <!-- @FUNCTIONALITY: API integration for data persistence -->
+    <!-- @FUNCTIONALITY: Responsive design for mobile and desktop use -->
+</body>
+</html>

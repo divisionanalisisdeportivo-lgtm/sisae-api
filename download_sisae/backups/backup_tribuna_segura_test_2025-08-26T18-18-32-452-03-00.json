@@ -1,0 +1,59 @@
+{
+  "timestamp": "2025-08-26T18:18:32.452-03:00",
+  "version": "1.0",
+  "clubSanctions": [],
+  "personalSanctions": [
+    {
+      "id": "test-tribuna-1",
+      "numeroCarga": 1,
+      "nombrePersona": "Tribuna Segura Test 1",
+      "dniPersona": "11111111",
+      "edadPersona": 25,
+      "deporte": "fútbol",
+      "ubicacion": "Córdoba Capital",
+      "motivoSancion": "conducta violenta",
+      "fechaInicio": "2025-01-01",
+      "fechaFin": "2025-02-01",
+      "observaciones": "Test tribuna segura 1",
+      "reportadaEnPdf": false,
+      "fechaCreacion": "2025-08-26T17:00:00.000-03:00"
+    },
+    {
+      "id": "test-tribuna-2",
+      "numeroCarga": 2,
+      "nombrePersona": "Tribuna Segura Test 2",
+      "dniPersona": "22222222",
+      "edadPersona": 30,
+      "deporte": "fútbol",
+      "ubicacion": "Córdoba Capital",
+      "motivoSancion": "uso de pirotecnia",
+      "fechaInicio": "2025-01-01",
+      "fechaFin": "2025-02-01",
+      "observaciones": "Test tribuna segura 2",
+      "reportadaEnPdf": false,
+      "fechaCreacion": "2025-08-26T17:00:00.000-03:00"
+    },
+    {
+      "id": "test-tribuna-3",
+      "numeroCarga": 3,
+      "nombrePersona": "Tribuna Segura Test 3",
+      "dniPersona": "33333333",
+      "edadPersona": 35,
+      "deporte": "fútbol",
+      "ubicacion": "Córdoba Capital",
+      "motivoSancion": "agresión física",
+      "fechaInicio": "2025-01-01",
+      "fechaFin": "2025-02-01",
+      "observaciones": "Test tribuna segura 3",
+      "reportadaEnPdf": false,
+      "fechaCreacion": "2025-08-26T17:00:00.000-03:00"
+    }
+  ],
+  "users": [],
+  "statistics": {
+    "totalClubSanctions": 0,
+    "totalPersonalSanctions": 3,
+    "totalUsers": 0,
+    "backupDate": "2025-08-26T18:18:32.452-03:00"
+  }
+}

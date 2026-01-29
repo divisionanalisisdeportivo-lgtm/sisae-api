@@ -1,0 +1,122 @@
+================================================================================
+              SISTEMA SISAE - GUÍA DE INSTALACIÓN LOCAL
+================================================================================
+
+REQUISITOS PREVIOS:
+-------------------
+1. Node.js versión 18 o superior (descargar de: https://nodejs.org)
+2. PostgreSQL versión 12 o superior (descargar de: https://www.postgresql.org)
+
+================================================================================
+PASOS DE INSTALACIÓN:
+================================================================================
+
+PASO 1: CREAR BASE DE DATOS POSTGRESQL
+---------------------------------------
+Abrir una terminal y ejecutar:
+
+  psql -U postgres
+
+Dentro de PostgreSQL crear la base de datos:
+
+  CREATE DATABASE sisae_db;
+  \q
+
+PASO 2: CONFIGURAR VARIABLES DE ENTORNO
+---------------------------------------
+Crear un archivo llamado ".env" en la carpeta raíz del proyecto con este contenido:
+
+  DATABASE_URL=postgresql://postgres:TU_PASSWORD@localhost:5432/sisae_db
+  SESSION_SECRET=sisae-secret-key-cambiar-en-produccion
+
+NOTA: Reemplazar "TU_PASSWORD" con tu contraseña de PostgreSQL.
+
+PASO 3: INSTALAR DEPENDENCIAS
+-----------------------------
+Abrir terminal en la carpeta del proyecto y ejecutar:
+
+  npm install
+
+PASO 4: CREAR TABLAS EN LA BASE DE DATOS
+----------------------------------------
+Ejecutar:
+
+  npm run db:push
+
+PASO 5: INICIAR LA APLICACIÓN
+-----------------------------
+Ejecutar:
+
+  npm run dev
+
+PASO 6: ACCEDER A LA APLICACIÓN
+-------------------------------
+Abrir el navegador en:
+
+  http://localhost:5000
+
+================================================================================
+CREDENCIALES INICIALES:
+================================================================================
+La primera vez que accedas, necesitarás crear un usuario administrador.
+Esto se hace automáticamente la primera vez que intentas registrarte.
+
+================================================================================
+ESTRUCTURA DEL PROYECTO:
+================================================================================
+- server/       -> Código del backend (API REST con Express)
+- client/       -> Código del frontend (React + Vite)
+- shared/       -> Esquemas de datos compartidos
+- backups/      -> Respaldos de datos (incluye respaldos existentes)
+
+================================================================================
+TECNOLOGÍAS UTILIZADAS:
+================================================================================
+- Backend:  Node.js + Express + TypeScript
+- Frontend: React + TypeScript + Vite
+- Base de datos: PostgreSQL + Drizzle ORM
+- UI: Tailwind CSS + shadcn/ui
+- Autenticación: Passport.js con sesiones
+
+================================================================================
+FUNCIONALIDADES PRINCIPALES:
+================================================================================
+- Gestión de sanciones de clubes
+- Gestión de sanciones personales (Tribuna Segura)
+- Generación de reportes PDF mensuales
+- Sistema de respaldos automáticos
+- Panel de administración de usuarios
+- Estadísticas y dashboards
+
+================================================================================
+COMANDOS DISPONIBLES:
+================================================================================
+  npm run dev      -> Iniciar en modo desarrollo
+  npm run build    -> Compilar para producción
+  npm run db:push  -> Sincronizar esquema de base de datos
+
+================================================================================
+SOLUCIÓN DE PROBLEMAS:
+================================================================================
+1. Si hay error de conexión a PostgreSQL:
+   - Verificar que PostgreSQL esté corriendo
+   - Verificar credenciales en DATABASE_URL
+
+2. Si hay error al instalar dependencias:
+   - Ejecutar: npm cache clean --force
+   - Ejecutar: npm install nuevamente
+
+3. Si el puerto 5000 está ocupado:
+   - Cambiar PORT en el archivo .env (ej: PORT=3000)
+
+================================================================================
+SOPORTE:
+================================================================================
+Para restaurar datos de un respaldo:
+1. Iniciar sesión como administrador
+2. Ir a la pestaña "Administrar"
+3. Usar el gestor de respaldos para restaurar
+
+Los archivos de respaldo están en la carpeta /backups
+
+================================================================================
