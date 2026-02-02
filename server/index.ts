@@ -17,15 +17,6 @@ app.get("/health", (_req, res) => {
   });
 });
 
-// Root endpoint for confirmation
-app.get("/", (_req, res) => {
-  res.json({ 
-    message: "SISAE System API",
-    version: "1.0.0",
-    docs: "/api/docs (if available)"
-  });
-});
-
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
